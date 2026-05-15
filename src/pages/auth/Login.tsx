@@ -29,22 +29,35 @@ export function Login() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
+    console.log('[Login] Attempting login for:', data.email);
     setLoading(true);
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { error: signInError, data: sessionData } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
-      if (signInError) throw signInError;
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await useAuthStore.getState().setSession(user);
-        navigate('/dashboard');
+      if (signInError) {
+        console.error('[Login] Sign in error:', signInError.message);
+        throw signInError;
       }
+
+      const user = sessionData?.user;
+      if (!user) {
+        console.error('[Login] No user returned after login');
+        throw new Error('No user returned after login');
+      }
+
+      console.log('[Login] Sign in successful, setting session...');
+      await useAuthStore.getState().setSession(user);
+
+      const store = useAuthStore.getState();
+      console.log('[Login] Session set, role:', store.role, 'navigating to /dashboard');
+
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed';
+      console.error('[Login] Login failed:', message);
       toast({
         title: 'Login failed',
         description: message,
