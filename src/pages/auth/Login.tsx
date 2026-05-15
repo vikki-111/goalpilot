@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,7 +29,6 @@ export function Login() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log('[Login] Attempting login for:', data.email);
     setLoading(true);
     try {
       const { error: signInError, data: sessionData } = await supabase.auth.signInWithPassword({
@@ -38,26 +37,30 @@ export function Login() {
       });
 
       if (signInError) {
-        console.error('[Login] Sign in error:', signInError.message);
         throw signInError;
       }
 
       const user = sessionData?.user;
       if (!user) {
-        console.error('[Login] No user returned after login');
         throw new Error('No user returned after login');
       }
 
-      console.log('[Login] Sign in successful, setting session...');
       await useAuthStore.getState().setSession(user);
 
       const store = useAuthStore.getState();
-      console.log('[Login] Session set, role:', store.role, 'navigating to /dashboard');
+      if (!store.profile) {
+        toast({
+          title: 'Profile not found',
+          description: 'Run supabase/seed.sql in your Supabase SQL Editor to set up demo users.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
 
       navigate('/dashboard', { replace: true });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed';
-      console.error('[Login] Login failed:', message);
       toast({
         title: 'Login failed',
         description: message,

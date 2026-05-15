@@ -134,19 +134,12 @@ create index idx_audit_log_entity on audit_log(entity_type, entity_id);
 
 -- Profiles
 alter table profiles enable row level security;
-create policy "profiles_select" on profiles
-  for select using (
-    auth.uid() = id
-    or manager_id = auth.uid()
-    or exists (select 1 from profiles where id = auth.uid() and role = 'admin')
-  );
-create policy "profiles_insert" on profiles
+create policy "profiles_select_all" on profiles
+  for select using (true);
+create policy "profiles_insert_own" on profiles
   for insert with check (auth.uid() = id);
-create policy "profiles_update" on profiles
-  for update using (
-    auth.uid() = id
-    or exists (select 1 from profiles where id = auth.uid() and role = 'admin')
-  );
+create policy "profiles_update_own" on profiles
+  for update using (auth.uid() = id);
 
 -- Goal sheets
 alter table goal_sheets enable row level security;

@@ -33,7 +33,7 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
 }
 
 export function AppShell() {
-  const { role } = useAuth();
+  const { role, profile } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 

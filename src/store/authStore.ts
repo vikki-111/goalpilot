@@ -20,7 +20,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   loading: true,
 
   setSession: async (user: User) => {
-    console.log('[Auth] setSession called for user:', user.id);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -31,36 +30,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const profile = data as Profile | null;
 
       if (error || !profile) {
-        console.warn('[Auth] Profile not found, creating one...', error?.message);
-        const fullName = user.email?.split('@')[0] ?? 'User';
-        const { data: newProfile, error: insertError } = await supabase
-          .from('profiles')
-          .insert({
-            id: user.id,
-            full_name: fullName,
-            email: user.email ?? '',
-            role: 'employee',
-          })
-          .select()
-          .single();
-
-        if (insertError || !newProfile) {
-          console.error('[Auth] Failed to create profile:', insertError?.message);
-          set({ user, profile: null, role: 'employee', loading: false });
-          return;
-        }
-
-        console.log('[Auth] Profile created:', (newProfile as Profile).role);
-        set({
-          user,
-          profile: newProfile as Profile,
-          role: (newProfile as Profile).role,
-          loading: false,
-        });
+        console.warn('[Auth] Profile not found for user:', user.id);
+        set({ user, profile: null, role: null, loading: false });
         return;
       }
 
-      console.log('[Auth] Profile found:', profile.role);
       set({
         user,
         profile,
@@ -74,7 +48,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   clearSession: () => {
-    console.log('[Auth] clearSession called');
     set({ user: null, profile: null, role: null, loading: false });
   },
 
