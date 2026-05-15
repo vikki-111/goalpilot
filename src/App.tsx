@@ -7,6 +7,7 @@ import { MyGoals } from '@/pages/employee/MyGoals';
 import { MyAchievements } from '@/pages/employee/MyAchievements';
 import { TeamDashboard } from '@/pages/manager/TeamDashboard';
 import { ApprovalQueue } from '@/pages/manager/ApprovalQueue';
+import { ApprovalDetail } from '@/pages/manager/ApprovalDetail';
 import { CheckinView } from '@/pages/manager/CheckinView';
 import { CycleManager } from '@/pages/admin/CycleManager';
 import { OrgManager } from '@/pages/admin/OrgManager';
@@ -44,6 +45,7 @@ export default function App() {
               <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
                 <Route path="/manager/dashboard" element={<TeamDashboard />} />
                 <Route path="/manager/approvals" element={<ApprovalQueue />} />
+                <Route path="/manager/approvals/:sheetId" element={<ApprovalDetail />} />
                 <Route path="/manager/checkins" element={<CheckinView />} />
               </Route>
 
