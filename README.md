@@ -36,8 +36,7 @@ Production-grade full-stack web application for employee goal management, quarte
 
 1. Create a project at https://supabase.com
 2. Go to SQL Editor and run `supabase/schema.sql` (creates all tables, enums, RLS, triggers)
-3. Run `supabase/seed.sql` after creating auth users (see below)
-4. Create auth users in Supabase Dashboard → Authentication → Users:
+3. Create auth users in Supabase Dashboard → Authentication → Users:
 
 | Email | Password | Role |
 |---|---|---|
@@ -49,7 +48,7 @@ Production-grade full-stack web application for employee goal management, quarte
 | emp3@demo.com | Employee@123 | employee |
 | emp4@demo.com | Employee@123 | employee |
 
-5. After creating users, run `supabase/seed.sql` to populate profiles, cycles, thrust areas, and sample goals.
+4. Run `supabase/seed.sql` to populate profiles, cycle, thrust areas, and sample goals.
 
 ### 2. Frontend Setup
 
@@ -80,35 +79,42 @@ npm run build
 
 | Phase | Feature | Status |
 |---|---|---|
-| 1 | Auth with Supabase email/password | ✓ |
-| 1 | Role-based access (employee/manager/admin) | ✓ |
-| 1 | Role-aware sidebar navigation | ✓ |
-| 1 | Protected routes with redirects | ✓ |
-| 1 | Database schema with RLS policies | ✓ |
-| 1 | Demo seed data | ✓ |
-| 2 | Goal sheet creation & editing | |
-| 2 | Weightage validation (100% total, min 10%, max 8 goals) | |
-| 2 | Manager approval/return workflow | |
-| 2 | Shared goal push from admin | |
-| 3 | Quarterly achievement tracking | |
-| 3 | Live score computation preview | |
-| 3 | Manager check-in comments | |
-| 4 | Achievement report table | |
-| 4 | XLSX export | |
-| 4 | Completion dashboard | |
-| 4 | Audit log with JSON diff | |
-| 5 | QoQ trend line chart | |
-| 5 | Completion heatmap | |
-| 5 | Goal distribution charts | |
-| 5 | Manager effectiveness chart | |
-| 6 | Global error boundary | ✓ |
-| 6 | Toast notifications | ✓ |
-| 6 | Skeleton loaders | |
-| 6 | Empty states | |
-| 6 | Responsive layout | ✓ |
-| 7 | Azure AD SSO | |
-| 7 | Teams notifications | |
-| 7 | Org hierarchy sync | |
+| **1** | Auth with Supabase email/password | ✅ |
+| **1** | Role-based access (employee/manager/admin) | ✅ |
+| **1** | Role-aware sidebar navigation | ✅ |
+| **1** | Protected routes with redirects | ✅ |
+| **1** | Database schema with RLS policies | ✅ |
+| **1** | Demo seed data (users, cycle, thrust areas, goals) | ✅ |
+| **1** | Global error boundary | ✅ |
+| **1** | Toast notification system | ✅ |
+| **2** | Goal sheet creation & editing | ✅ |
+| **2** | Weightage validation (100% total, min 10%, max 8 goals) | ✅ |
+| **2** | Live weightage progress bar | ✅ |
+| **2** | Submit flow with validation gating | ✅ |
+| **2** | Manager approval queue | ✅ |
+| **2** | Inline goal editing during approval | ✅ |
+| **2** | Approve & lock / Return with comment | ✅ |
+| **2** | Admin shared goal push | ✅ |
+| **3** | Quarterly achievement tracking | ✅ |
+| **3** | Live score computation preview | ✅ |
+| **3** | Quarter window gating | ✅ |
+| **3** | Manager check-in comments | ✅ |
+| **3** | Score badge color coding | ✅ |
+| **4** | Achievement report table | ✅ |
+| **4** | Filter by department/quarter/employee | ✅ |
+| **4** | XLSX export with timestamped filename | ✅ |
+| **4** | Audit log with JSON diff view | ✅ |
+| **5** | QoQ trend line chart | ✅ |
+| **5** | Completion heatmap | ✅ |
+| **5** | Goal distribution pie + bar charts | ✅ |
+| **5** | Manager effectiveness chart | ✅ |
+| **6** | Responsive layout (collapsible sidebar) | ✅ |
+| **6** | Mobile bottom sheet drawer | ✅ |
+| **6** | Skeleton loaders on data pages | ✅ |
+| **6** | Empty states for all list views | ✅ |
+| **7** | Azure AD SSO | ⏳ Deferred |
+| **7** | Teams notifications | ⏳ Deferred |
+| **7** | Org hierarchy sync | ⏳ Deferred |
 
 ## Tech Stack
 
@@ -130,20 +136,20 @@ src/
 ├── components/
 │   ├── ui/              # shadcn/ui primitives
 │   ├── layout/          # AppShell, Sidebar, TopBar
-│   ├── goals/           # Goal creation & approval
-│   ├── checkins/        # Achievement tracking
-│   ├── reports/         # Reports & export
-│   └── analytics/       # Charts & dashboards
+│   ├── goals/           # GoalForm, GoalSheet, GoalApprovalCard
+│   ├── checkins/        # AchievementRow, CheckinModal, ScoreBadge
+│   ├── reports/         # Reports, AuditLog
+│   └── analytics/       # AnalyticsCharts (4 chart types)
 ├── pages/
 │   ├── auth/            # Login
-│   ├── employee/        # Employee views
-│   ├── manager/         # Manager views
-│   └── admin/           # Admin views
-├── lib/                 # Supabase client, scoring, validation, cycle logic
-├── hooks/               # Custom React hooks
-├── store/               # Zustand auth store
-├── types/               # TypeScript types + DB types
-└── utils/               # Utility functions
+│   ├── employee/        # MyGoals, MyAchievements
+│   ├── manager/         # TeamDashboard, ApprovalQueue, CheckinView
+│   └── admin/           # CycleManager, OrgManager, SharedGoalPush, Reports, AuditLog, Analytics
+├── lib/                 # supabase, scoring, validation, cycle, export, supabase-helpers
+├── hooks/               # useAuth, useGoalSheet, useAchievements, use-toast
+├── store/               # authStore (Zustand)
+├── types/               # TypeScript types
+└── utils/               # cn utility
 ```
 
 ## License
