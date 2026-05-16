@@ -12,6 +12,8 @@ import {
   ScrollText,
   BarChart3,
   Lock,
+  AlertTriangle,
+  ListChecks,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import type { UserRole } from '@/types';
@@ -31,6 +33,8 @@ const navItems: NavItem[] = [
   { label: 'Check-ins', icon: MessageSquare, href: '/manager/checkins', roles: ['manager'] },
   { label: 'Org Check-ins', icon: MessageSquare, href: '/admin/checkins', roles: ['admin'] },
   { label: 'Unlock Goals', icon: Lock, href: '/admin/unlock', roles: ['admin'] },
+  { label: 'Escalation Rules', icon: AlertTriangle, href: '/admin/escalation-rules', roles: ['admin'] },
+  { label: 'Escalation Log', icon: ListChecks, href: '/admin/escalation-log', roles: ['admin'] },
   { label: 'Cycle Manager', icon: Settings, href: '/admin/cycles', roles: ['admin'] },
   { label: 'Org Manager', icon: Building2, href: '/admin/org', roles: ['admin'] },
   { label: 'Shared Goals', icon: Share2, href: '/admin/shared-goals', roles: ['admin'] },
