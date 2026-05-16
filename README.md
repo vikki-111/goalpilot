@@ -4,27 +4,62 @@ Production-grade full-stack web application for employee goal management, quarte
 
 ## Architecture
 
+```mermaid
+graph TB
+    subgraph Vercel["Vercel — Frontend (SPA)"]
+        direction TB
+        React["React 18 + Vite + TypeScript"]
+        Zustand["Zustand — Auth State"]
+        RQ["React Query — Server Cache"]
+        Router["React Router — Role Routes"]
+        UI["Tailwind + shadcn/ui"]
+        Forms["react-hook-form + zod"]
+        Charts["Recharts"]
+        Export["SheetJS (XLSX/CSV)"]
+        React --> Zustand
+        React --> RQ
+        React --> Router
+        React --> UI
+        React --> Forms
+        React --> Charts
+        React --> Export
+    end
+
+    subgraph Supabase["Supabase — Backend (BaaS)"]
+        direction TB
+        PG["PostgreSQL — 8 Tables"]
+        Auth["Auth — Email/Password"]
+        RLS["RLS — Row-Level Security"]
+        Triggers["Triggers — Audit + Shared Sync"]
+        Realtime["Realtime — Live Updates"]
+        PG --> RLS
+        PG --> Triggers
+        PG --> Realtime
+        Auth --> PG
+    end
+
+    Vercel <-->|"HTTPS / REST API"| Supabase
+
+    subgraph Roles["User Roles"]
+        direction LR
+        Emp["Employee"]
+        Mgr["Manager (L1)"]
+        Adm["Admin / HR"]
+    end
+
+    Roles --> Vercel
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Vercel (Frontend)                     │
-│  React 18 + Vite + TypeScript                            │
-│  ├── Zustand (local state)                               │
-│  ├── React Query (server state)                          │
-│  ├── React Router (routing)                              │
-│  ├── Tailwind + shadcn/ui (styling)                      │
-│  ├── react-hook-form + zod (validation)                  │
-│  └── Recharts + SheetJS (charts & export)                │
-└───────────────────────┬─────────────────────────────────┘
-                        │ HTTPS / REST
-┌───────────────────────▼─────────────────────────────────┐
-│                 Supabase (Backend)                       │
-│  ├── PostgreSQL (database)                               │
-│  ├── Auth (email/password + Azure AD SSO)               │
-│  ├── RLS (row-level security policies)                   │
-│  ├── Realtime (live updates)                             │
-│  └── Triggers (audit logging)                            │
-└─────────────────────────────────────────────────────────┘
-```
+
+### Data Flow
+
+| Action | Flow |
+|---|---|
+| Goal Create | Employee → GoalForm (zod validate) → `goals` table → audit trigger fires |
+| Goal Approve | Manager → ApprovalCard (inline edit) → `goal_sheets.status = 'approved'` → sheet locked |
+| Achievement | Employee → AchievementRow (score preview) → `achievements` table → sync trigger propagates to shared goals |
+| Check-in | Manager → CheckinModal → `checkin_comments` table |
+| Escalation | Admin → Run scan → `runEscalationScan()` → `escalation_log` upsert |
+| Export | Admin → Reports → `exportToXlsx` / `exportToCsv` → browser download |
 
 ## Demo Credentials
 
@@ -47,7 +82,7 @@ Production-grade full-stack web application for employee goal management, quarte
 5. **Check-ins** → View team achievements by quarter, add manager comments
 6. **Login as admin** → Org stats (4 employees, 4 approved), Q1 completion rate, department summary, audit log
 7. **Analytics** → QoQ trends (Engineering + Sales lines), heatmap (all 4 employees), goal distribution pie, manager effectiveness bars
-8. **Reports** → Filter by department/quarter, export to XLSX
+8. **Reports** → Filter by department/quarter, export to XLSX or CSV
 9. **Audit Log** → Red strikethrough → green diff view with employee names resolved
 10. **Unlock Goals** → Admin can revert approved/locked sheets to editable state
 11. **Cycle Manager** → Create/edit cycles, set active cycle
@@ -151,6 +186,7 @@ npm run build
 | **4** | Achievement report table | ✅ |
 | **4** | Filter by department/quarter/employee | ✅ |
 | **4** | XLSX export with timestamped filename | ✅ |
+| **4** | CSV export with UTF-8 BOM | ✅ |
 | **4** | Audit log with JSON diff view | ✅ |
 | **5** | QoQ trend line chart | ✅ |
 | **5** | Completion heatmap | ✅ |
@@ -160,7 +196,9 @@ npm run build
 | **6** | Mobile bottom sheet drawer | ✅ |
 | **6** | Skeleton loaders on data pages | ✅ |
 | **6** | Empty states for all list views | ✅ |
+| **6** | Role-specific dashboards (Employee/Manager/Admin) | ✅ |
 | **7** | Admin goal unlock capability | ✅ |
+| **7** | Escalation rules + scan + log | ✅ |
 | **7** | Azure AD SSO | ⏳ Deferred |
 | **7** | Teams notifications | ⏳ Deferred |
 | **7** | Org hierarchy sync | ⏳ Deferred |
