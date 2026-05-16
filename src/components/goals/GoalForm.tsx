@@ -119,6 +119,7 @@ export function GoalForm({
             {...register('title')}
             placeholder="e.g., Reduce deployment time by 50%"
             readOnly={isReadonly || isReadonlyTitle}
+            disabled={isReadonlyTitle && !isReadonly}
           />
           {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
         </div>

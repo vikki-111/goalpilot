@@ -14,9 +14,9 @@ export function validateGoalSheet(goals: { weightage: number }[]): string | null
   if (goals.some(g => g.weightage < GOAL_RULES.MIN_WEIGHTAGE)) {
     return `Each goal must have at least ${GOAL_RULES.MIN_WEIGHTAGE}% weightage.`;
   }
-  const total = goals.reduce((sum, g) => sum + g.weightage, 0);
-  if (total !== GOAL_RULES.TOTAL_WEIGHTAGE) {
-    return `Total weightage must equal 100%. Current: ${total}%.`;
+  const total = goals.reduce((sum, g) => sum + parseFloat(g.weightage.toString()), 0);
+  if (Math.abs(total - GOAL_RULES.TOTAL_WEIGHTAGE) > 0.01) {
+    return `Total weightage must equal 100%. Current: ${total.toFixed(1)}%.`;
   }
   return null;
 }

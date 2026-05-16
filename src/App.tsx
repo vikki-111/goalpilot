@@ -3,9 +3,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppShell, ProtectedRoute } from '@/components/layout/AppShell';
 import { Login } from '@/pages/auth/Login';
 import { Dashboard } from '@/pages/Dashboard';
+import { TeamDashboard } from '@/pages/manager/TeamDashboard';
+import { AdminDashboard } from '@/pages/admin/AdminDashboard';
 import { MyGoals } from '@/pages/employee/MyGoals';
 import { MyAchievements } from '@/pages/employee/MyAchievements';
-import { TeamDashboard } from '@/pages/manager/TeamDashboard';
 import { ApprovalQueue } from '@/pages/manager/ApprovalQueue';
 import { ApprovalDetail } from '@/pages/manager/ApprovalDetail';
 import { CheckinView } from '@/pages/manager/CheckinView';
@@ -16,6 +17,14 @@ import { Reports } from '@/pages/admin/Reports';
 import { AuditLog } from '@/pages/admin/AuditLog';
 import { Analytics } from '@/pages/admin/Analytics';
 import { Toaster } from '@/components/ui/toaster';
+import { useAuth } from '@/hooks/useAuth';
+
+function RoleDashboard() {
+  const { role } = useAuth();
+  if (role === 'manager') return <TeamDashboard />;
+  if (role === 'admin') return <AdminDashboard />;
+  return <Dashboard />;
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +44,7 @@ export default function App() {
 
           <Route element={<ProtectedRoute allowedRoles={['employee', 'manager', 'admin']} />}>
             <Route element={<AppShell />}>
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<RoleDashboard />} />
 
               <Route element={<ProtectedRoute allowedRoles={['employee']} />}>
                 <Route path="/employee/goals" element={<MyGoals />} />
@@ -43,7 +52,6 @@ export default function App() {
               </Route>
 
               <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
-                <Route path="/manager/dashboard" element={<TeamDashboard />} />
                 <Route path="/manager/approvals" element={<ApprovalQueue />} />
                 <Route path="/manager/approvals/:sheetId" element={<ApprovalDetail />} />
                 <Route path="/manager/checkins" element={<CheckinView />} />

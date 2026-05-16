@@ -15,7 +15,11 @@ import { canUpdateAchievement, getActiveWindow } from '@/lib/cycle';
 import type { Goal, Achievement, Quarter, Cycle, CheckinStatus } from '@/types';
 
 const achievementSchema = z.object({
-  actual_value: z.string().optional(),
+  actual_value: z.string().optional().refine((val) => {
+    if (val === undefined || val === '') return true;
+    const n = parseFloat(val);
+    return !isNaN(n) && n >= 0;
+  }, 'Value cannot be negative'),
   actual_date: z.string().optional(),
   status: z.enum(['not_started', 'on_track', 'completed']),
   employee_note: z.string().optional(),
@@ -63,7 +67,7 @@ export function AchievementRow({
 }: AchievementRowProps) {
   const [localScore, setLocalScore] = useState<number | null>(achievement?.score ?? null);
 
-  const { register, watch, handleSubmit, setValue } = useForm<AchievementFormValues>({
+  const { register, watch, handleSubmit, setValue, formState: { errors } } = useForm<AchievementFormValues>({
     resolver: zodResolver(achievementSchema),
     defaultValues: {
       actual_value: achievement?.actual_value?.toString() ?? '',
@@ -166,10 +170,14 @@ export function AchievementRow({
                   <Input
                     type="number"
                     step="any"
+                    min={0}
                     {...register('actual_value')}
                     placeholder="Enter actual value"
                     readOnly={!canEdit}
                   />
+                  {errors.actual_value && (
+                    <p className="text-xs text-destructive">{errors.actual_value.message}</p>
+                  )}
                 </div>
               )}
 

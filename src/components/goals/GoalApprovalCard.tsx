@@ -116,7 +116,7 @@ export function GoalApprovalCard() {
         approvedBy: profile.id,
       });
       toast({ title: 'Goals approved', variant: 'success' });
-      navigate('/manager/approvals');
+      navigate('/dashboard');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to approve';
       toast({ title: 'Approval failed', description: message, variant: 'destructive' });
@@ -137,7 +137,7 @@ export function GoalApprovalCard() {
       });
       toast({ title: 'Goals returned', description: 'Employee has been notified.', variant: 'success' });
       setReturnOpen(false);
-      navigate('/manager/approvals');
+      navigate('/dashboard');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to return';
       toast({ title: 'Return failed', description: message, variant: 'destructive' });
@@ -165,7 +165,7 @@ export function GoalApprovalCard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/manager/approvals')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')}>
           <ArrowLeft className="mr-1 h-4 w-4" />
           Back
         </Button>

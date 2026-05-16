@@ -149,7 +149,13 @@ create policy "goal_sheet_all" on goal_sheets
     or exists (
       select 1 from profiles p
       where p.id = auth.uid()
-      and (p.role = 'admin' or p.role = 'manager')
+      and p.role = 'admin'
+    )
+    or exists (
+      select 1 from profiles mgr
+      where mgr.id = auth.uid()
+      and mgr.role = 'manager'
+      and mgr.id = (select manager_id from profiles where id = employee_id)
     )
   );
 
@@ -162,7 +168,17 @@ create policy "goals_all" on goals
       where gs.id = sheet_id
       and (
         gs.employee_id = auth.uid()
-        or exists (select 1 from profiles p where p.id = auth.uid() and p.role in ('manager','admin'))
+        or exists (
+          select 1 from profiles p
+          where p.id = auth.uid()
+          and p.role = 'admin'
+        )
+        or exists (
+          select 1 from profiles mgr
+          where mgr.id = auth.uid()
+          and mgr.role = 'manager'
+          and mgr.id = (select manager_id from profiles where id = gs.employee_id)
+        )
       )
     )
   );
@@ -177,7 +193,17 @@ create policy "achievements_all" on achievements
       where g.id = goal_id
       and (
         gs.employee_id = auth.uid()
-        or exists (select 1 from profiles p where p.id = auth.uid() and p.role in ('manager','admin'))
+        or exists (
+          select 1 from profiles p
+          where p.id = auth.uid()
+          and p.role = 'admin'
+        )
+        or exists (
+          select 1 from profiles mgr
+          where mgr.id = auth.uid()
+          and mgr.role = 'manager'
+          and mgr.id = (select manager_id from profiles where id = gs.employee_id)
+        )
       )
     )
   );
@@ -209,7 +235,17 @@ create policy "checkin_comments_all" on checkin_comments
       where a.id = achievement_id
       and (
         gs.employee_id = auth.uid()
-        or exists (select 1 from profiles p where p.id = auth.uid() and p.role in ('manager','admin'))
+        or exists (
+          select 1 from profiles p
+          where p.id = auth.uid()
+          and p.role = 'admin'
+        )
+        or exists (
+          select 1 from profiles mgr
+          where mgr.id = auth.uid()
+          and mgr.role = 'manager'
+          and mgr.id = (select manager_id from profiles where id = gs.employee_id)
+        )
       )
     )
   );
@@ -246,6 +282,50 @@ for each row execute function log_post_lock_changes();
 create trigger goal_sheets_audit_trigger
 after update on goal_sheets
 for each row execute function log_post_lock_changes();
+
+-- =====================================================
+-- TRIGGER: Sync shared goal achievements
+-- =====================================================
+create or replace function sync_shared_achievements()
+returns trigger as $$
+declare
+  v_goal_id uuid;
+  v_shared_parent uuid;
+  v_quarter quarter;
+  v_cycle_id uuid;
+begin
+  v_goal_id := (select goal_id from achievements where id = new.id);
+  v_shared_parent := (select shared_parent_id from goals where id = v_goal_id);
+  v_quarter := new.quarter;
+  v_cycle_id := new.cycle_id;
+
+  if v_shared_parent is not null and (
+    (old.actual_value is distinct from new.actual_value) or
+    (old.actual_date is distinct from new.actual_date) or
+    (old.status is distinct from new.status) or
+    (old.score is distinct from new.score)
+  ) then
+    update achievements a
+    set
+      actual_value = new.actual_value,
+      actual_date = new.actual_date,
+      status = new.status,
+      score = new.score,
+      submitted_at = now()
+    from goals g
+    where a.goal_id = g.id
+      and g.shared_parent_id = v_shared_parent
+      and a.quarter = v_quarter
+      and a.cycle_id = v_cycle_id
+      and a.id != new.id;
+  end if;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger achievements_shared_sync_trigger
+after update on achievements
+for each row execute function sync_shared_achievements();
 
 -- =====================================================
 -- HELPER: Auto-create profile on signup

@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   Target,
   Trophy,
-  Users,
   ClipboardCheck,
   MessageSquare,
   Settings,
@@ -24,9 +23,9 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard', roles: ['employee', 'manager', 'admin'] },
   { label: 'My Goals', icon: Target, href: '/employee/goals', roles: ['employee'] },
   { label: 'My Achievements', icon: Trophy, href: '/employee/achievements', roles: ['employee'] },
-  { label: 'Team Dashboard', icon: Users, href: '/manager/dashboard', roles: ['manager', 'admin'] },
   { label: 'Approval Queue', icon: ClipboardCheck, href: '/manager/approvals', roles: ['manager', 'admin'] },
   { label: 'Check-ins', icon: MessageSquare, href: '/manager/checkins', roles: ['manager', 'admin'] },
   { label: 'Cycle Manager', icon: Settings, href: '/admin/cycles', roles: ['admin'] },

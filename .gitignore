@@ -67,3 +67,7 @@ yarn-error.log*
 # Out of git tracking
 *.tgz
 .vercel
+
+# Agent skills
+.agents/
+skills-lock.json

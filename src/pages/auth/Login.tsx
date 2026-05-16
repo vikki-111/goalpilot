@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -58,7 +58,12 @@ export function Login() {
         return;
       }
 
-      navigate('/dashboard', { replace: true });
+      const roleRedirects: Record<string, string> = {
+        employee: '/dashboard',
+        manager: '/dashboard',
+        admin: '/dashboard',
+      };
+      navigate(roleRedirects[store.profile.role] ?? '/dashboard', { replace: true });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed';
       toast({

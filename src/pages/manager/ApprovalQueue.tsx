@@ -22,6 +22,17 @@ export function ApprovalQueue() {
   const { data: sheets, isLoading } = useQuery({
     queryKey: ['approval-queue', profile?.id],
     queryFn: async () => {
+      const { data: directReportIds, error: reportsError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('manager_id', profile!.id);
+
+      if (reportsError) throw reportsError;
+
+      const reportIds = (directReportIds ?? []).map((p) => p.id);
+
+      if (reportIds.length === 0) return [];
+
       const { data, error } = await supabase
         .from('goal_sheets')
         .select(`
@@ -30,6 +41,7 @@ export function ApprovalQueue() {
           goals(count)
         `)
         .eq('status', 'submitted')
+        .in('employee_id', reportIds)
         .order('submitted_at', { ascending: false });
 
       if (error) throw error;
