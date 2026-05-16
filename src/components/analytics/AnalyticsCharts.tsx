@@ -11,7 +11,7 @@ const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
 
 interface QoQData {
   quarter: string;
-  [key: string]: string | number;
+  [key: string]: string | number | null;
 }
 
 interface HeatmapCell {
@@ -64,7 +64,7 @@ export function QoQTrendChart() {
         const obj: QoQData = { quarter: q };
         for (const [dept, values] of Object.entries(byDept)) {
           const v = values[q];
-          obj[dept] = v && v.count > 0 ? Math.round(v.total / v.count) : 0;
+          obj[dept] = v && v.count > 0 ? Math.round(v.total / v.count) : null;
         }
         return obj;
       });
@@ -87,7 +87,7 @@ export function QoQTrendChart() {
         <Tooltip />
         <Legend />
         {departments.map((dept, i) => (
-          <Line key={dept} type="monotone" dataKey={dept} stroke={COLORS[i % COLORS.length]} strokeWidth={2} dot={{ r: 4 }} />
+          <Line key={dept} type="monotone" dataKey={dept} stroke={COLORS[i % COLORS.length]} strokeWidth={2} dot={{ r: 4 }} connectNulls={false} />
         ))}
       </LineChart>
     </ResponsiveContainer>
@@ -98,7 +98,7 @@ export function CompletionHeatmap() {
   const { data, isLoading } = useQuery({
     queryKey: ['analytics-heatmap'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: achievements, error } = await supabase
         .from('achievements')
         .select(`
           quarter,
@@ -114,7 +114,7 @@ export function CompletionHeatmap() {
 
       const byEmployee: Record<string, { name: string; dept: string; scores: Record<string, number[]> }> = {};
 
-      for (const row of data ?? []) {
+      for (const row of achievements ?? []) {
         const goalData = row.goals as unknown as Record<string, unknown> | null;
         const gs = goalData?.goal_sheets as unknown as Record<string, unknown> | null;
         const profiles = gs?.profiles as unknown as Record<string, unknown> | null;
@@ -132,6 +132,26 @@ export function CompletionHeatmap() {
         }
         if (score !== null) {
           byEmployee[empId].scores[quarter].push(score);
+        }
+      }
+
+      const { data: approvedSheets } = await supabase
+        .from('goal_sheets')
+        .select(`
+          employee_id,
+          profiles!goal_sheets_employee_id_fkey(full_name, department)
+        `)
+        .in('status', ['approved', 'locked']);
+
+      for (const sheet of approvedSheets ?? []) {
+        const empId = (sheet as Record<string, unknown>).employee_id as string;
+        const profiles = (sheet as Record<string, unknown>).profiles as Record<string, unknown> | null;
+        if (!byEmployee[empId]) {
+          byEmployee[empId] = {
+            name: (profiles?.full_name as string) ?? 'Unknown',
+            dept: (profiles?.department as string) ?? 'Unknown',
+            scores: { Q1: [], Q2: [], Q3: [], Q4: [] },
+          };
         }
       }
 
@@ -236,7 +256,6 @@ export function GoalDistributionChart() {
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ name, percent }) => `${name} (${((percent ?? 0) * 100).toFixed(0)}%)`}
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
@@ -246,6 +265,7 @@ export function GoalDistributionChart() {
               ))}
             </Pie>
             <Tooltip />
+            <Legend />
           </PieChart>
         </ResponsiveContainer>
       </div>
@@ -295,24 +315,29 @@ export function ManagerEffectivenessChart() {
           .in('employee_id', empIds);
 
         const sheetIds = ((sheets ?? []) as Array<{ id: string }>).map((s) => s.id);
-        if (sheetIds.length === 0) continue;
 
-        const { data: goals } = await supabase
-          .from('goals')
-          .select('id')
-          .in('sheet_id', sheetIds);
+        let completedCount = 0;
+        let totalPossible = 0;
 
-        const goalIds = ((goals ?? []) as Array<{ id: string }>).map((g) => g.id);
-        if (goalIds.length === 0) continue;
+        if (sheetIds.length > 0) {
+          const { data: goals } = await supabase
+            .from('goals')
+            .select('id')
+            .in('sheet_id', sheetIds);
 
-        const { data: achievements } = await supabase
-          .from('achievements')
-          .select('id, status')
-          .in('goal_id', goalIds);
+          const goalIds = ((goals ?? []) as Array<{ id: string }>).map((g) => g.id);
+          if (goalIds.length > 0) {
+            const { data: achievements } = await supabase
+              .from('achievements')
+              .select('id, status')
+              .in('goal_id', goalIds);
 
-        const allAchievements = (achievements ?? []) as Array<{ id: string; status: string }>;
-        const completedCount = allAchievements.filter((a) => a.status === 'completed').length;
-        const totalPossible = allAchievements.length;
+            const allAchievements = (achievements ?? []) as Array<{ id: string; status: string }>;
+            totalPossible = allAchievements.length;
+            completedCount = allAchievements.filter((a) => a.status === 'completed').length;
+          }
+        }
+
         const percentage = totalPossible > 0 ? Math.round((completedCount / totalPossible) * 100) : 0;
 
         results.push({ name: mgrName, percentage, completed: completedCount, total: totalPossible });
@@ -332,7 +357,7 @@ export function ManagerEffectivenessChart() {
         <XAxis type="number" domain={[0, 100]} label={{ value: 'Completion %', position: 'insideBottom', offset: -5 }} />
         <YAxis type="category" dataKey="name" width={120} />
         <Tooltip />
-        <Bar dataKey="percentage" radius={[0, 4, 4, 0]}>
+        <Bar dataKey="percentage" radius={[0, 4, 4, 0]} minPointSize={3}>
           {data.map((entry, i) => (
             <Cell key={i} fill={entry.percentage >= 80 ? '#10b981' : entry.percentage >= 50 ? '#f59e0b' : '#ef4444'} />
           ))}
