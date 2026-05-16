@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useActiveCycle, useGoalSheet } from '@/hooks/useGoalSheet';
-import { useUpsertAchievement } from '@/hooks/useAchievements';
+import { useUpsertAchievement, useEmployeeAchievements } from '@/hooks/useAchievements';
 import { AchievementRow } from '@/components/checkins/AchievementRow';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getActiveWindow, canUpdateAchievement, getQuarterLabel } from '@/lib/cycle';
 import { useToast } from '@/hooks/use-toast';
-import type { Quarter } from '@/types';
+import type { Quarter, Achievement } from '@/types';
 
 const QUARTERS: Quarter[] = ['Q1', 'Q2', 'Q3', 'Q4'];
 
@@ -23,6 +23,10 @@ export function MyAchievements() {
     profile?.id ?? '',
     cycle?.id ?? ''
   );
+  const { data: allAchievements, isLoading: achLoading } = useEmployeeAchievements(
+    profile?.id ?? '',
+    cycle?.id ?? ''
+  );
 
   const upsertAchievement = useUpsertAchievement();
 
@@ -32,7 +36,15 @@ export function MyAchievements() {
   const goals = sheetData?.goals ?? [];
   const approvedGoals = goals.filter(() => sheetData?.sheet.status === 'approved' || sheetData?.sheet.status === 'locked');
 
-  if (cycleLoading || sheetLoading) {
+  const getAchievementForGoal = useMemo(() => {
+    return (goalId: string): Achievement | null => {
+      return (allAchievements ?? []).find(
+        (a) => a.goal_id === goalId && a.quarter === selectedQuarter
+      ) ?? null;
+    };
+  }, [allAchievements, selectedQuarter]);
+
+  if (cycleLoading || sheetLoading || achLoading) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-8 w-48" />
@@ -113,7 +125,7 @@ export function MyAchievements() {
             goal={goal}
             quarter={selectedQuarter}
             cycle={cycle}
-            achievement={null}
+            achievement={getAchievementForGoal(goal.id)}
             isReadonly={!canEditQuarter}
             onSave={async (data) => {
               try {

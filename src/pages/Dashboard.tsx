@@ -78,7 +78,7 @@ export function Dashboard() {
     return goals.map((goal) => {
       const ach = achievements.find((a) => a.goal_id === goal.id);
       let score: number | null = null;
-      if (ach) {
+      if (ach && ach.actual_value !== null) {
         score = ach.score ?? computeScore(
           goal.uom_type,
           goal.target_value,
@@ -94,8 +94,13 @@ export function Dashboard() {
   const weightedScore = useMemo(() => {
     const scored = goalScores.filter((g) => g.score !== null);
     if (!scored.length) return null;
-    const total = scored.reduce((sum, g) => sum + (g.score! / 100) * g.weightage, 0);
-    return Math.round(total);
+    const weightedSum = scored.reduce((sum, g) => sum + (g.score! / 100) * g.weightage, 0);
+    const totalWeight = scored.reduce((sum, g) => sum + g.weightage, 0);
+    return totalWeight > 0 ? Math.round(weightedSum / totalWeight * 100) : null;
+  }, [goalScores]);
+
+  const goalsWithData = useMemo(() => {
+    return goalScores.filter((g) => g.score !== null).length;
   }, [goalScores]);
 
   const recentActivity = useMemo(() => {
@@ -219,7 +224,9 @@ export function Dashboard() {
                 <span className={`text-3xl font-bold ${getScoreColor(weightedScore).split(' ')[1]}`}>
                   {weightedScore}%
                 </span>
-                <p className="text-xs text-muted-foreground mt-1">Weighted average score</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Based on {goalsWithData} of {goalScores.length} goals
+                </p>
               </div>
             ) : (
               <div className="text-center py-2">
