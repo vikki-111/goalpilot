@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScoreBadge } from '@/components/checkins/ScoreBadge';
-import { exportToXlsx, generateReportFilename } from '@/lib/export';
+import { exportToXlsx, exportToCsv, generateReportFilename, generateCsvFilename } from '@/lib/export';
 import { useToast } from '@/hooks/use-toast';
 import { Download, FileText } from 'lucide-react';
 import type { Quarter } from '@/types';
@@ -141,30 +141,40 @@ export function Reports() {
     return true;
   });
 
-  const handleExport = () => {
+  const handleExportXlsx = () => {
     if (!filteredData?.length) return;
 
-    const columns = [
-      { header: 'Employee', key: 'employee' },
-      { header: 'Department', key: 'department' },
-      { header: 'Goal', key: 'goalTitle' },
-      { header: 'Thrust Area', key: 'thrustArea' },
-      { header: 'UoM', key: 'uomType' },
-      { header: 'Target', key: 'target' },
-      { header: 'Q1 Actual', key: 'q1Actual' },
-      { header: 'Q2 Actual', key: 'q2Actual' },
-      { header: 'Q3 Actual', key: 'q3Actual' },
-      { header: 'Q4 Actual', key: 'q4Actual' },
-      { header: 'Q1 Score', key: 'q1Score' },
-      { header: 'Q2 Score', key: 'q2Score' },
-      { header: 'Q3 Score', key: 'q3Score' },
-      { header: 'Q4 Score', key: 'q4Score' },
-    ];
-
+    const columns = getReportColumns();
     const filename = generateReportFilename('achievement_report', cycle?.label ?? 'report');
     exportToXlsx(filteredData as unknown as Array<Record<string, unknown>>, columns, filename);
     toast({ title: 'Report exported', description: filename, variant: 'success' });
   };
+
+  const handleExportCsv = () => {
+    if (!filteredData?.length) return;
+
+    const columns = getReportColumns();
+    const filename = generateCsvFilename('achievement_report', cycle?.label ?? 'report');
+    exportToCsv(filteredData as unknown as Array<Record<string, unknown>>, columns, filename);
+    toast({ title: 'Report exported', description: filename, variant: 'success' });
+  };
+
+  const getReportColumns = () => [
+    { header: 'Employee', key: 'employee' },
+    { header: 'Department', key: 'department' },
+    { header: 'Goal', key: 'goalTitle' },
+    { header: 'Thrust Area', key: 'thrustArea' },
+    { header: 'UoM', key: 'uomType' },
+    { header: 'Target', key: 'target' },
+    { header: 'Q1 Actual', key: 'q1Actual' },
+    { header: 'Q2 Actual', key: 'q2Actual' },
+    { header: 'Q3 Actual', key: 'q3Actual' },
+    { header: 'Q4 Actual', key: 'q4Actual' },
+    { header: 'Q1 Score', key: 'q1Score' },
+    { header: 'Q2 Score', key: 'q2Score' },
+    { header: 'Q3 Score', key: 'q3Score' },
+    { header: 'Q4 Score', key: 'q4Score' },
+  ];
 
   if (isLoading) {
     return (
@@ -182,10 +192,16 @@ export function Reports() {
           <h1 className="text-3xl font-bold tracking-tight">Reports</h1>
           <p className="text-muted-foreground mt-1">View and export achievement data</p>
         </div>
-        <Button onClick={handleExport} disabled={!filteredData?.length}>
-          <Download className="mr-1 h-4 w-4" />
-          Export XLSX
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExportCsv} disabled={!filteredData?.length}>
+            <Download className="mr-1 h-4 w-4" />
+            Export CSV
+          </Button>
+          <Button onClick={handleExportXlsx} disabled={!filteredData?.length}>
+            <Download className="mr-1 h-4 w-4" />
+            Export XLSX
+          </Button>
+        </div>
       </div>
 
       <Card>
