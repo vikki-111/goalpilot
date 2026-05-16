@@ -45,66 +45,76 @@ export function Reports() {
     queryKey: ['achievement-report', cycle?.id, filterDepartment, filterQuarter],
     queryFn: async () => {
       let query = supabase
-        .from('achievements')
+        .from('goals')
         .select(`
           *,
-          goals!inner(
-            *,
-            thrust_areas(name),
-            goal_sheets!inner(
-              employee_id,
-              profiles!goal_sheets_employee_id_fkey(full_name, department)
-            )
+          thrust_areas(name),
+          goal_sheets!inner(
+            status,
+            employee_id,
+            profiles!goal_sheets_employee_id_fkey(full_name, department)
           )
         `);
 
-      if (cycle) query = query.eq('cycle_id', cycle.id);
       if (filterDepartment !== 'all') {
-        query = query.eq('goals.goal_sheets.profiles.department', filterDepartment);
+        query = query.eq('goal_sheets.profiles.department', filterDepartment);
       }
 
-      const { data, error } = await query;
+      const { data: goalsData, error } = await query;
       if (error) throw error;
 
-      const grouped: Record<string, ReportRow> = {};
+      const approvedGoals = (goalsData ?? []).filter((g: Record<string, unknown>) => {
+        const gs = g.goal_sheets as Record<string, unknown> | null;
+        return gs?.status === 'approved' || gs?.status === 'locked';
+      });
 
-      for (const achievement of data ?? []) {
-        const goal = achievement.goals as { title: string; uom_type: string; target_value: number | null; target_date: string | null; thrust_areas: { name: string } | null; goal_sheets: { profiles: { full_name: string; department: string } } };
-        const profiles = goal.goal_sheets?.profiles;
+      const allRows: ReportRow[] = [];
+
+      for (const goal of approvedGoals) {
+        const gs = goal.goal_sheets as Record<string, unknown> | null;
+        const profiles = gs?.profiles as Record<string, unknown> | null;
         if (!profiles) continue;
 
-        const key = `${profiles.full_name}-${goal.title}`;
-        if (!grouped[key]) {
-          const targetDisplay = goal.uom_type === 'timeline'
-            ? (goal.target_date ?? '—')
-            : goal.uom_type === 'zero'
-              ? '0'
-              : (goal.target_value?.toString() ?? '—');
+        const ta = goal.thrust_areas as Record<string, unknown> | null;
+        const targetDisplay = goal.uom_type === 'timeline'
+          ? (goal.target_date?.toString() ?? '—')
+          : goal.uom_type === 'zero'
+            ? '0'
+            : (goal.target_value?.toString() ?? '—');
 
-          grouped[key] = {
-            employee: profiles.full_name,
-            department: profiles.department ?? '—',
-            goalTitle: goal.title,
-            thrustArea: goal.thrust_areas?.name ?? '—',
-            uomType: goal.uom_type,
-            target: targetDisplay,
-            q1Actual: '—', q2Actual: '—', q3Actual: '—', q4Actual: '—',
-            q1Score: null, q2Score: null, q3Score: null, q4Score: null,
-          };
+        const row: ReportRow = {
+          employee: profiles.full_name as string,
+          department: (profiles.department as string) ?? '—',
+          goalTitle: goal.title as string,
+          thrustArea: (ta?.name as string) ?? '—',
+          uomType: goal.uom_type as string,
+          target: targetDisplay,
+          q1Actual: '—', q2Actual: '—', q3Actual: '—', q4Actual: '—',
+          q1Score: null, q2Score: null, q3Score: null, q4Score: null,
+        };
+
+        const { data: achievements } = await supabase
+          .from('achievements')
+          .select('*')
+          .eq('goal_id', goal.id)
+          .eq('cycle_id', cycle?.id ?? '');
+
+        for (const ach of achievements ?? []) {
+          const quarter = ach.quarter as Quarter;
+          const actualDisplay = goal.uom_type === 'timeline'
+            ? (ach.actual_date?.toString() ?? '—')
+            : (ach.actual_value?.toString() ?? '—');
+
+          const actualKey = `${quarter.toLowerCase()}Actual` as keyof ReportRow;
+          const scoreKey = `${quarter.toLowerCase()}Score` as keyof ReportRow;
+          (row as unknown as Record<string, unknown>)[actualKey] = actualDisplay;
+          (row as unknown as Record<string, unknown>)[scoreKey] = ach.score;
         }
 
-        const quarter = achievement.quarter as Quarter;
-        const actualDisplay = goal.uom_type === 'timeline'
-          ? (achievement.actual_date ?? '—')
-          : (achievement.actual_value?.toString() ?? '—');
-
-        const actualKey = `${quarter.toLowerCase()}Actual` as keyof ReportRow;
-        const scoreKey = `${quarter.toLowerCase()}Score` as keyof ReportRow;
-        (grouped[key] as unknown as Record<string, unknown>)[actualKey] = actualDisplay;
-        (grouped[key] as unknown as Record<string, unknown>)[scoreKey] = achievement.score;
+        allRows.push(row);
       }
 
-      return Object.values(grouped);
+      return allRows;
     },
     enabled: !!cycle,
   });
@@ -241,50 +251,50 @@ export function Reports() {
           {filteredData?.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">No data matches the current filters.</p>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="w-full overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Employee</TableHead>
-                    <TableHead>Department</TableHead>
+                    <TableHead className="whitespace-nowrap">Employee</TableHead>
+                    <TableHead className="whitespace-nowrap">Department</TableHead>
                     <TableHead>Goal</TableHead>
-                    <TableHead>Thrust Area</TableHead>
-                    <TableHead>UoM</TableHead>
-                    <TableHead>Target</TableHead>
-                    <TableHead>Q1</TableHead>
-                    <TableHead>Q2</TableHead>
-                    <TableHead>Q3</TableHead>
-                    <TableHead>Q4</TableHead>
+                    <TableHead className="whitespace-nowrap">Thrust Area</TableHead>
+                    <TableHead className="whitespace-nowrap">UoM</TableHead>
+                    <TableHead className="whitespace-nowrap">Target</TableHead>
+                    <TableHead className="text-center whitespace-nowrap">Q1</TableHead>
+                    <TableHead className="text-center whitespace-nowrap">Q2</TableHead>
+                    <TableHead className="text-center whitespace-nowrap">Q3</TableHead>
+                    <TableHead className="text-center whitespace-nowrap">Q4</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredData?.map((row, i) => (
                     <TableRow key={i}>
-                      <TableCell className="font-medium">{row.employee}</TableCell>
-                      <TableCell>{row.department}</TableCell>
-                      <TableCell className="max-w-40 truncate" title={row.goalTitle}>{row.goalTitle}</TableCell>
-                      <TableCell>{row.thrustArea}</TableCell>
-                      <TableCell>{row.uomType}</TableCell>
-                      <TableCell>{row.target}</TableCell>
-                      <TableCell>
+                      <TableCell className="font-medium whitespace-nowrap">{row.employee}</TableCell>
+                      <TableCell className="whitespace-nowrap">{row.department}</TableCell>
+                      <TableCell className="max-w-56 truncate" title={row.goalTitle}>{row.goalTitle}</TableCell>
+                      <TableCell className="whitespace-nowrap">{row.thrustArea}</TableCell>
+                      <TableCell className="whitespace-nowrap">{row.uomType}</TableCell>
+                      <TableCell className="whitespace-nowrap">{row.target}</TableCell>
+                      <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
                           <span className="text-xs">{row.q1Actual}</span>
                           <ScoreBadge score={row.q1Score} size="sm" />
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
                           <span className="text-xs">{row.q2Actual}</span>
                           <ScoreBadge score={row.q2Score} size="sm" />
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
                           <span className="text-xs">{row.q3Actual}</span>
                           <ScoreBadge score={row.q3Score} size="sm" />
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
                           <span className="text-xs">{row.q4Actual}</span>
                           <ScoreBadge score={row.q4Score} size="sm" />

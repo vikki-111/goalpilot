@@ -9,6 +9,11 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollText } from 'lucide-react';
 import type { AuditLog } from '@/types';
 
+interface AuditLogWithMeta extends AuditLog {
+  profiles: { full_name: string } | null;
+  entityName?: string | null;
+}
+
 interface JsonDiffProps {
   before: Record<string, unknown> | null;
   after: Record<string, unknown> | null;
@@ -68,14 +73,47 @@ export function AuditLog() {
 
       const { data, error } = await query;
       if (error) throw error;
-      return (data ?? []) as (AuditLog & { profiles: { full_name: string } | null })[];
+
+      const enriched: AuditLogWithMeta[] = (data ?? []) as AuditLogWithMeta[];
+
+      for (const log of enriched) {
+        if (log.entity_type === 'goal_sheets') {
+          const { data: sheet } = await supabase
+            .from('goal_sheets')
+            .select('employee_id')
+            .eq('id', log.entity_id)
+            .single();
+
+          if (sheet) {
+            const { data: emp } = await supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', (sheet as { employee_id: string }).employee_id)
+              .single();
+
+            log.entityName = (emp as { full_name: string } | null)?.full_name ?? null;
+          }
+        }
+      }
+
+      return enriched;
     },
   });
+
+  const actionLabels: Record<string, string> = {
+    update: 'updated',
+    unlock: 'unlocked',
+    approve: 'approved',
+    approved: 'approved',
+    return: 'returned',
+    submit: 'submitted',
+  };
 
   const actionColors: Record<string, 'default' | 'success' | 'warning' | 'info' | 'destructive' | 'outline'> = {
     update: 'info',
     unlock: 'warning',
     approve: 'success',
+    approved: 'success',
     return: 'destructive',
     submit: 'default',
   };
@@ -109,8 +147,8 @@ export function AuditLog() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All types</SelectItem>
-                <SelectItem value="goal">Goals</SelectItem>
-                <SelectItem value="goal_sheet">Goal Sheets</SelectItem>
+                <SelectItem value="goals">Goals</SelectItem>
+                <SelectItem value="goal_sheets">Goal Sheets</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -140,14 +178,19 @@ export function AuditLog() {
                       <TableCell>
                         <div className="text-xs">
                           <span className="font-medium">{log.entity_type}</span>
-                          <span className="text-muted-foreground ml-1 font-mono">
-                            {log.entity_id.slice(0, 8)}...
-                          </span>
+                          {log.entityName && (
+                            <span className="text-muted-foreground ml-1">· {log.entityName}</span>
+                          )}
+                          {!log.entityName && (
+                            <span className="text-muted-foreground ml-1 font-mono">
+                              {log.entity_id.slice(0, 8)}...
+                            </span>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
                         <Badge variant={actionColors[log.action] ?? 'outline'} className="text-xs">
-                          {log.action}
+                          {actionLabels[log.action] ?? log.action}
                         </Badge>
                       </TableCell>
                       <TableCell className="max-w-64">
