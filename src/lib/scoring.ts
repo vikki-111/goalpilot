@@ -32,7 +32,7 @@ export function computeScore(
 }
 
 export function getScoreColor(score: number | null): string {
-  if (score === null) return 'bg-gray-200 text-gray-500';
+  if (score === null) return 'bg-muted/50 text-muted-foreground/60';
   if (score < 50) return 'bg-red-100 text-red-700';
   if (score < 80) return 'bg-amber-100 text-amber-700';
   if (score < 100) return 'bg-blue-100 text-blue-700';
@@ -40,6 +40,6 @@ export function getScoreColor(score: number | null): string {
 }
 
 export function getScoreLabel(score: number | null): string {
-  if (score === null) return '—';
+  if (score === null) return '';
   return `${Math.round(score)}%`;
 }

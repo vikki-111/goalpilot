@@ -13,6 +13,10 @@ export function ScoreBadge({ score, size = 'md' }: ScoreBadgeProps) {
     lg: 'text-base px-3 py-1.5',
   };
 
+  if (score === null) {
+    return null;
+  }
+
   return (
     <span className={cn('inline-flex items-center font-semibold rounded-full', getScoreColor(score), sizeClasses[size])}>
       {getScoreLabel(score)}

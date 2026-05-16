@@ -239,9 +239,13 @@ export function Dashboard() {
               {goalScores.map((g) => (
                 <div key={g.title} className="flex items-center justify-between text-sm">
                   <span className="truncate flex-1 mr-2">{g.title}</span>
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded ${getScoreColor(g.score)}`}>
-                    {getScoreLabel(g.score)}
-                  </span>
+                  {g.score !== null ? (
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded ${getScoreColor(g.score)}`}>
+                      {getScoreLabel(g.score)}
+                    </span>
+                  ) : (
+                    <span className="w-8" />
+                  )}
                 </div>
               ))}
             </div>
