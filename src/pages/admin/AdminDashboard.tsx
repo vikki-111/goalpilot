@@ -43,12 +43,12 @@ export function AdminDashboard() {
     currentQuarter
   );
 
-  const nextWindowDate = useMemo(() => {
+  const nextWindowInfo = useMemo(() => {
     if (!cycle) return null;
-    if (activeWindow === 'goal_setting') return new Date(cycle.q1_opens);
-    if (activeWindow === 'Q1') return new Date(cycle.q2_opens);
-    if (activeWindow === 'Q2') return new Date(cycle.q3_opens);
-    if (activeWindow === 'Q3') return new Date(cycle.q4_opens);
+    if (activeWindow === 'goal_setting') return { label: 'Q1', date: new Date(cycle.q1_opens) };
+    if (activeWindow === 'Q1') return { label: 'Q2', date: new Date(cycle.q2_opens) };
+    if (activeWindow === 'Q2') return { label: 'Q3', date: new Date(cycle.q3_opens) };
+    if (activeWindow === 'Q3') return { label: 'Q4', date: new Date(cycle.q4_opens) };
     return null;
   }, [cycle, activeWindow]);
 
@@ -95,7 +95,7 @@ export function AdminDashboard() {
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-blue-600">{orgStats?.goals_submitted ?? 0}</div>
+            <div className="text-2xl font-bold">{orgStats?.goals_submitted ?? 0}</div>
             <p className="text-xs text-muted-foreground">Goals Submitted</p>
           </CardContent>
         </Card>
@@ -107,7 +107,7 @@ export function AdminDashboard() {
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-amber-600">{orgStats?.goals_pending ?? 0}</div>
+            <div className={`text-2xl font-bold ${orgStats?.goals_pending === 0 ? 'text-green-600' : 'text-amber-600'}`}>{orgStats?.goals_pending ?? 0}</div>
             <p className="text-xs text-muted-foreground">Pending</p>
           </CardContent>
         </Card>
@@ -128,10 +128,10 @@ export function AdminDashboard() {
                 Current window: {windowLabels[activeWindow]}
               </p>
             </div>
-            {nextWindowDate && (
+            {nextWindowInfo && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                Next window opens {nextWindowDate.toLocaleDateString()}
+                {nextWindowInfo.label} opens {nextWindowInfo.date.toLocaleDateString()}
               </div>
             )}
             <Button variant="outline" onClick={() => navigate('/admin/cycles')} className="w-full">
@@ -155,7 +155,7 @@ export function AdminDashboard() {
                 {checkinCompletion?.submitted_count ?? 0} of {checkinCompletion?.total_employees ?? 0} employees
               </p>
             </div>
-            <Progress value={checkinCompletion?.completion_pct ?? 0} className="h-2" />
+            <Progress value={checkinCompletion?.completion_pct ?? 0} className="h-2 [&>div]:bg-amber-500" />
           </CardContent>
         </Card>
 
@@ -203,9 +203,9 @@ export function AdminDashboard() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Department</TableHead>
-                  <TableHead>Employees</TableHead>
+                  <TableHead>Emps</TableHead>
                   <TableHead>Avg Score</TableHead>
-                  <TableHead>Check-in %</TableHead>
+                  <TableHead>CI%</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

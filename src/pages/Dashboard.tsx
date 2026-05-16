@@ -64,12 +64,12 @@ export function Dashboard() {
   const currentQuarter = QUARTERS.find((q) => q === activeWindow) ?? null;
   const canEditAchievements = currentQuarter ? canUpdateAchievement(activeWindow, currentQuarter) : false;
 
-  const nextWindowDate = useMemo(() => {
+  const nextWindowInfo = useMemo(() => {
     if (!cycle) return null;
-    if (activeWindow === 'goal_setting') return new Date(cycle.q1_opens);
-    if (activeWindow === 'Q1') return new Date(cycle.q2_opens);
-    if (activeWindow === 'Q2') return new Date(cycle.q3_opens);
-    if (activeWindow === 'Q3') return new Date(cycle.q4_opens);
+    if (activeWindow === 'goal_setting') return { label: 'Q1', date: new Date(cycle.q1_opens) };
+    if (activeWindow === 'Q1') return { label: 'Q2', date: new Date(cycle.q2_opens) };
+    if (activeWindow === 'Q2') return { label: 'Q3', date: new Date(cycle.q3_opens) };
+    if (activeWindow === 'Q3') return { label: 'Q4', date: new Date(cycle.q4_opens) };
     return null;
   }, [cycle, activeWindow]);
 
@@ -188,10 +188,10 @@ export function Dashboard() {
                 ) : (
                   <Badge variant="outline" className="text-sm">Window closed</Badge>
                 )}
-                {nextWindowDate && (
+                {nextWindowInfo && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Clock className="h-4 w-4" />
-                    Next window opens {nextWindowDate.toLocaleDateString()}
+                    {nextWindowInfo.label} opens {nextWindowInfo.date.toLocaleDateString()}
                   </div>
                 )}
                 <Button onClick={() => navigate('/employee/achievements')} className="w-full">
@@ -204,9 +204,9 @@ export function Dashboard() {
                 <p className="text-sm text-muted-foreground">
                   {activeWindow === 'none' ? 'No window is currently open' : 'Goal setting window is active'}
                 </p>
-                {nextWindowDate && (
+                {nextWindowInfo && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    Q1 opens {nextWindowDate.toLocaleDateString()}
+                    {nextWindowInfo.label} opens {nextWindowInfo.date.toLocaleDateString()}
                   </p>
                 )}
               </div>
