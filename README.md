@@ -26,6 +26,30 @@ Production-grade full-stack web application for employee goal management, quarte
 └─────────────────────────────────────────────────────────┘
 ```
 
+## Demo Credentials
+
+| Email | Password | Role | What to Show |
+|---|---|---|---|
+| admin@demo.com | Admin@123 | admin | Dashboard, Analytics, Reports, Audit Log, Cycle/Org Manager |
+| manager1@demo.com | Manager@123 | manager | Team Dashboard, Approval Queue, Check-ins (Engineering team) |
+| manager2@demo.com | Manager@123 | manager | Team Dashboard, Approval Queue, Check-ins (Sales team) |
+| emp1@demo.com | Employee@123 | employee | My Goals, My Achievements (Ananya — Engineering) |
+| emp2@demo.com | Employee@123 | employee | My Goals, My Achievements (Vikram — Engineering) |
+| emp3@demo.com | Employee@123 | employee | My Goals, My Achievements (Sneha — Sales) |
+| emp4@demo.com | Employee@123 | employee | My Goals, My Achievements (Arjun — Sales) |
+
+## Demo Walkthrough
+
+1. **Login as employee** → Dashboard shows goal status, current quarter, progress scores, recent activity
+2. **My Achievements** → Q1 data is filled for all 4 employees, Q2 partially filled for Ananya & Sneha
+3. **Login as manager** → Team Dashboard shows pending approvals, check-in progress, team scores
+4. **Approval Queue** → Review and approve/return goal sheets
+5. **Check-ins** → View team achievements, add manager comments
+6. **Login as admin** → Org stats, cycle management, department summary, audit log, analytics
+7. **Analytics** → QoQ trends (Engineering + Sales lines), heatmap, goal distribution, manager effectiveness
+8. **Reports** → Filter by department/quarter, export to XLSX
+9. **Audit Log** → Red strikethrough → green diff view for all changes
+
 ## Setup
 
 ### Prerequisites
