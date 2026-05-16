@@ -203,7 +203,7 @@ export function CheckinView() {
 
                     return (
                       <TableRow key={goal.id}>
-                        <TableCell className="font-medium max-w-48 truncate" title={goal.title}>
+                        <TableCell className="font-medium max-w-64 truncate" title={goal.title}>
                           {goal.title}
                         </TableCell>
                         <TableCell className="text-xs">{goal.uom_type}</TableCell>
@@ -216,12 +216,17 @@ export function CheckinView() {
                             : '—'}
                         </TableCell>
                         <TableCell>
-                          <ScoreBadge score={achievement?.score ?? null} size="sm" />
+                          {achievement?.score !== null && achievement?.score !== undefined ? (
+                            <ScoreBadge score={achievement.score} size="sm" />
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
+                          )}
                         </TableCell>
                         <TableCell>
                           <Badge variant={
                             achievement?.status === 'completed' ? 'success' :
-                            achievement?.status === 'on_track' ? 'info' : 'outline'
+                            achievement?.status === 'on_track' ? 'info' :
+                            'secondary'
                           } className="text-xs">
                             {statusLabels[achievement?.status ?? 'not_started']}
                           </Badge>

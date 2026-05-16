@@ -23,6 +23,14 @@ const STATUS_COLORS: Record<string, string> = {
   locked: 'bg-green-100 text-green-700',
 };
 
+function scoreBarColor(score: number | null): string {
+  if (score === null) return '';
+  if (score < 50) return '[&>div]:bg-red-500';
+  if (score < 80) return '[&>div]:bg-amber-500';
+  if (score < 100) return '[&>div]:bg-blue-500';
+  return '[&>div]:bg-green-500';
+}
+
 export function TeamDashboard() {
   const { profile } = useAuth();
   const navigate = useNavigate();
@@ -124,7 +132,7 @@ export function TeamDashboard() {
             </div>
             <Progress
               value={achievementSummary?.length ? (achievementSummary.filter((a) => a.achievements_submitted > 0).length / achievementSummary.length) * 100 : 0}
-              className="h-2"
+              className="h-2 [&>div]:bg-blue-500"
             />
 
             {achievementSummary?.some((a) => a.achievements_submitted === 0) && (
@@ -204,10 +212,14 @@ export function TeamDashboard() {
                     <p className="text-sm font-medium truncate">{emp.full_name}</p>
                   </div>
                   <div className="flex-1">
-                    <Progress
-                      value={emp.avg_score ?? 0}
-                      className="h-2"
-                    />
+                    {emp.avg_score !== null ? (
+                      <Progress
+                        value={emp.avg_score}
+                        className={`h-2 ${scoreBarColor(emp.avg_score)}`}
+                      />
+                    ) : (
+                      <div className="h-2" />
+                    )}
                   </div>
                   <div className="w-16 text-right">
                     {emp.avg_score !== null ? (
