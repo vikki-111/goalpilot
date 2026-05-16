@@ -20,10 +20,10 @@ export function canUpdateAchievement(window: ActiveWindow, quarter: Quarter): bo
 
 export function getQuarterLabel(quarter: Quarter): string {
   const labels: Record<Quarter, string> = {
-    Q1: 'Q1 (Jul–Sep)',
-    Q2: 'Q2 (Oct–Dec)',
-    Q3: 'Q3 (Jan–Mar)',
-    Q4: 'Q4 (Apr–Jun)',
+    Q1: 'Q1 (May–Aug)',
+    Q2: 'Q2 (Aug–Nov)',
+    Q3: 'Q3 (Nov–Feb)',
+    Q4: 'Q4 (Feb–May)',
   };
   return labels[quarter];
 }
