@@ -13,6 +13,7 @@ import { CheckinView } from '@/pages/manager/CheckinView';
 import { CycleManager } from '@/pages/admin/CycleManager';
 import { OrgManager } from '@/pages/admin/OrgManager';
 import { AdminCheckins } from '@/pages/admin/AdminCheckins';
+import { AdminUnlock } from '@/pages/admin/AdminUnlock';
 import { SharedGoalPush } from '@/pages/admin/SharedGoalPush';
 import { Reports } from '@/pages/admin/Reports';
 import { AuditLog } from '@/pages/admin/AuditLog';
@@ -62,6 +63,7 @@ export default function App() {
                 <Route path="/admin/cycles" element={<CycleManager />} />
                 <Route path="/admin/org" element={<OrgManager />} />
                 <Route path="/admin/checkins" element={<AdminCheckins />} />
+                <Route path="/admin/unlock" element={<AdminUnlock />} />
                 <Route path="/admin/shared-goals" element={<SharedGoalPush />} />
                 <Route path="/admin/reports" element={<Reports />} />
                 <Route path="/admin/audit" element={<AuditLog />} />
