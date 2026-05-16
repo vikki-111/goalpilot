@@ -66,13 +66,13 @@ where email = 'emp4@demo.com';
 -- Active Cycle
 insert into cycles (year, label, goal_setting_opens, q1_opens, q2_opens, q3_opens, q4_opens, is_active)
 values (
-  2025,
-  'FY 2025-26',
-  '2025-05-01',
-  '2025-07-01',
-  '2025-10-01',
-  '2026-01-01',
+  2026,
+  'FY 2026-27',
   '2026-03-01',
+  '2026-05-01',
+  '2026-08-01',
+  '2026-11-01',
+  '2027-02-01',
   true
 ) on conflict do nothing;
 

@@ -30,7 +30,7 @@ Production-grade full-stack web application for employee goal management, quarte
 
 | Email | Password | Role | What to Show |
 |---|---|---|---|
-| admin@demo.com | Admin@123 | admin | Dashboard, Analytics, Reports, Audit Log, Cycle/Org Manager |
+| admin@demo.com | Admin@123 | admin | Dashboard, Analytics, Reports, Audit Log, Cycle/Org Manager, Unlock Goals |
 | manager1@demo.com | Manager@123 | manager | Team Dashboard, Approval Queue, Check-ins (Engineering team) |
 | manager2@demo.com | Manager@123 | manager | Team Dashboard, Approval Queue, Check-ins (Sales team) |
 | emp1@demo.com | Employee@123 | employee | My Goals, My Achievements (Ananya — Engineering) |
@@ -40,15 +40,39 @@ Production-grade full-stack web application for employee goal management, quarte
 
 ## Demo Walkthrough
 
-1. **Login as employee** → Dashboard shows goal status, current quarter, progress scores, recent activity
-2. **My Achievements** → Q1 data is filled for all 4 employees, Q2 partially filled for Ananya & Sneha
-3. **Login as manager** → Team Dashboard shows pending approvals, check-in progress, team scores
-4. **Approval Queue** → Review and approve/return goal sheets
-5. **Check-ins** → View team achievements, add manager comments
-6. **Login as admin** → Org stats, cycle management, department summary, audit log, analytics
-7. **Analytics** → QoQ trends (Engineering + Sales lines), heatmap, goal distribution, manager effectiveness
+1. **Login as employee** → Dashboard shows goal status, Q1 (May–Aug) window open, progress scores, recent activity
+2. **My Achievements** → Q1 data filled for all 4 employees (18 achievements across all UoM types)
+3. **Login as manager** → Team Dashboard shows check-in progress, team scores sorted worst→best
+4. **Approval Queue** → Review and approve/return goal sheets with inline weightage editing
+5. **Check-ins** → View team achievements by quarter, add manager comments
+6. **Login as admin** → Org stats (4 employees, 4 approved), Q1 completion rate, department summary, audit log
+7. **Analytics** → QoQ trends (Engineering + Sales lines), heatmap (all 4 employees), goal distribution pie, manager effectiveness bars
 8. **Reports** → Filter by department/quarter, export to XLSX
-9. **Audit Log** → Red strikethrough → green diff view for all changes
+9. **Audit Log** → Red strikethrough → green diff view with employee names resolved
+10. **Unlock Goals** → Admin can revert approved/locked sheets to editable state
+11. **Cycle Manager** → Create/edit cycles, set active cycle
+12. **Org Manager** → Inline edit user department, role, and manager assignment
+
+## Active Cycle
+
+| Field | Value |
+|---|---|
+| Label | FY 2026-27 |
+| Goal Setting Opens | 2026-03-01 |
+| Q1 Opens | 2026-05-01 (currently active) |
+| Q2 Opens | 2026-08-01 |
+| Q3 Opens | 2026-11-01 |
+| Q4 Opens | 2027-02-01 |
+
+## Seeded Demo Data
+
+- **4 employees** across 2 departments (Engineering: Ananya, Vikram; Sales: Sneha, Arjun)
+- **2 managers** (Ravi Sharma → Engineering, Priya Patel → Sales)
+- **1 admin** (Admin User)
+- **18 approved goals** (4-5 per employee, spread across all UoM types)
+- **18 Q1 achievements** with realistic scores (50%–150%)
+- **4 manager check-in comments** (2 per manager)
+- **4 audit log entries** from goal approvals
 
 ## Setup
 
@@ -136,6 +160,7 @@ npm run build
 | **6** | Mobile bottom sheet drawer | ✅ |
 | **6** | Skeleton loaders on data pages | ✅ |
 | **6** | Empty states for all list views | ✅ |
+| **7** | Admin goal unlock capability | ✅ |
 | **7** | Azure AD SSO | ⏳ Deferred |
 | **7** | Teams notifications | ⏳ Deferred |
 | **7** | Org hierarchy sync | ⏳ Deferred |
@@ -168,7 +193,7 @@ src/
 │   ├── auth/            # Login
 │   ├── employee/        # MyGoals, MyAchievements
 │   ├── manager/         # TeamDashboard, ApprovalQueue, CheckinView
-│   └── admin/           # CycleManager, OrgManager, SharedGoalPush, Reports, AuditLog, Analytics
+│   └── admin/           # CycleManager, OrgManager, AdminCheckins, AdminUnlock, SharedGoalPush, Reports, AuditLog, Analytics
 ├── lib/                 # supabase, scoring, validation, cycle, export, supabase-helpers
 ├── hooks/               # useAuth, useGoalSheet, useAchievements, use-toast
 ├── store/               # authStore (Zustand)
