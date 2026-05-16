@@ -215,7 +215,7 @@ export function GoalSheet() {
         <CardContent>
           <Progress
             value={Math.min(totalWeightage, 100)}
-            className={`h-3 ${!weightageValid && totalWeightage > 100 ? '[&>div]:bg-red-500' : ''}`}
+            className={`h-3 ${!weightageValid && totalWeightage > 100 ? '[&>div]:bg-red-500' : '[&>div]:bg-green-500'}`}
           />
           <p className="text-xs text-muted-foreground mt-2">
             {goals.length}/{GOAL_RULES.MAX_GOALS} goals &middot; Each goal must be {GOAL_RULES.MIN_WEIGHTAGE}%&ndash;100%
@@ -310,8 +310,8 @@ function GoalSummaryRow({
   };
 
   return (
-    <div className="flex items-start justify-between rounded-lg border bg-card p-4">
-      <div className="flex-1 space-y-1">
+    <div className="flex items-start justify-between rounded-lg border bg-card p-3">
+      <div className="flex-1 space-y-0.5">
         <div className="flex items-center gap-2">
           {goal.is_shared && <Badge variant="info" className="text-xs">Shared</Badge>}
           <h3 className="font-medium">{goal.title}</h3>

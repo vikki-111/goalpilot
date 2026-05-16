@@ -95,7 +95,7 @@ export async function insertGoals(data: Array<{
 export async function fetchGoalsBySheet(sheetId: string): Promise<Goal[]> {
   const { data, error } = await supabase
     .from('goals')
-    .select('*')
+    .select('*, thrust_areas(name)')
     .eq('sheet_id', sheetId)
     .order('sort_order');
   if (error) throw error;

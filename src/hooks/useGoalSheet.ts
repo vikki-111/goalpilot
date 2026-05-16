@@ -66,7 +66,7 @@ export function useGoalSheet(employeeId: string, cycleId: string) {
       const goals = await fetchGoalsBySheet(sheet.id);
       const goalsWithThrust: GoalWithThrust[] = goals.map((g) => ({
         ...g,
-        thrust_areas: null,
+        thrust_areas: (g as unknown as Record<string, unknown>).thrust_areas as { name: string } | null,
       }));
 
       return { sheet, goals: goalsWithThrust };
