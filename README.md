@@ -1,12 +1,11 @@
-# AtomQuest — Goal Setting & Tracking Portal
+# GoalPilot — Goal Setting & Tracking Portal
 > Built for AtomQuest Hackathon 2026
 
 A full-stack OKR-style goal tracking portal for employees, managers, and admins —
-with quarterly achievement scoring, approval workflows, escalation rules, and analytics.
+with quarterly achievement scoring, approval workflows, escalation rules, analytics,
+and Microsoft Teams notifications via Azure AD SSO.
 
 **[Live Demo](https://goalpilot-two.vercel.app/)** · admin@demo.com / Admin@123
-
-> **Azure AD SSO + Teams Integration** — currently in development on `feature/azure-teams` branch
 
 ## Architecture
 
@@ -24,12 +23,13 @@ Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 | Check-in | Manager → CheckinModal → `checkin_comments` table |
 | Escalation | Admin → Run scan → `runEscalationScan()` → `escalation_log` upsert |
 | Export | Admin → Reports → `exportToXlsx` / `exportToCsv` → browser download |
+| Teams Notify | Any workflow event → Power Automate webhook → Adaptive Card in Teams channel |
 
 ## Demo Credentials
 
 | Email | Password | Role | What to Show |
 |---|---|---|---|
-| admin@demo.com | Admin@123 | admin | Dashboard, Analytics, Reports, Audit Log, Cycle/Org Manager, Unlock Goals |
+| admin@demo.com | Admin@123 | admin | Dashboard, Analytics, Reports, Audit Log, Cycle/Org Manager, Unlock Goals, Escalation Rules |
 | manager1@demo.com | Manager@123 | manager | Team Dashboard, Approval Queue, Check-ins (Engineering team) |
 | manager2@demo.com | Manager@123 | manager | Team Dashboard, Approval Queue, Check-ins (Sales team) |
 | emp1@demo.com | Employee@123 | employee | My Goals, My Achievements (Ananya — Engineering) |
@@ -39,7 +39,7 @@ Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 
 ## Demo Walkthrough
 
-1. **Login as employee** → Dashboard shows goal status, Q1 (May–Aug) window open, progress scores, recent activity
+1. **Login as employee** → Dashboard shows goal status, quarter window open, progress scores, recent activity
 2. **My Achievements** → Q1 data filled for all 4 employees (18 achievements across all UoM types)
 3. **Login as manager** → Team Dashboard shows check-in progress, team scores sorted worst→best
 4. **Approval Queue** → Review and approve/return goal sheets with inline weightage editing
@@ -51,14 +51,17 @@ Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 10. **Unlock Goals** → Admin can revert approved/locked sheets to editable state
 11. **Cycle Manager** → Create/edit cycles, set active cycle
 12. **Org Manager** → Inline edit user department, role, and manager assignment
+13. **Escalation Rules** → Configure thresholds, run scan, view escalation log
+14. **Teams Notifications** → Trigger any event (submit, approve, return, escalation, cycle save) → Adaptive Card appears in the corresponding Teams channel
+15. **Azure AD SSO** → Click "Sign in with Microsoft" → auto-assigned role based on Azure AD group membership
 
 ## Active Cycle
 
 | Field | Value |
 |---|---|
 | Label | FY 2026-27 |
-| Goal Setting Opens | 2026-03-01 |
-| Q1 Opens | 2026-05-01 (currently active) |
+| Goal Setting Opens | 2026-05-18 |
+| Q1 Opens | 2026-07-01 |
 | Q2 Opens | 2026-08-01 |
 | Q3 Opens | 2026-11-01 |
 | Q4 Opens | 2027-02-01 |
@@ -72,12 +75,14 @@ Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 - **18 Q1 achievements** with realistic scores (50%–150%)
 - **4 manager check-in comments** (2 per manager)
 - **4 audit log entries** from goal approvals
+- **3 escalation rules** (goal not submitted, goal not approved, check-in not completed)
 
 ## Setup
 
 ### Prerequisites
 - Node.js 20+
 - A Supabase project (free tier)
+- (Optional) Azure AD tenant for SSO + Power Automate for Teams notifications
 
 ### 1. Supabase Setup
 
@@ -104,12 +109,17 @@ Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 npm install
 
 # Create environment file
-# Create environment file from template
-cp .env.azure.example .env.azure
+cp .env.local.example .env.local
 
-# Edit .env.azure with your Supabase credentials:
+# Edit .env.local with your Supabase credentials:
 # VITE_SUPABASE_URL=https://your-project.supabase.co
 # VITE_SUPABASE_ANON_KEY=your-anon-key
+
+# (Optional) Teams notification webhooks
+# VITE_TEAMS_WEBHOOK_GOAL_SUBMISSIONS=
+# VITE_TEAMS_WEBHOOK_APPROVALS=
+# VITE_TEAMS_WEBHOOK_ESCALATIONS=
+# VITE_TEAMS_WEBHOOK_CHECKIN_REMINDERS=
 
 # Start dev server
 npm run dev
@@ -164,9 +174,10 @@ npm run build
 | **6** | Role-specific dashboards (Employee/Manager/Admin) | ✅ |
 | **7** | Admin goal unlock capability | ✅ |
 | **7** | Escalation rules + scan + log | ✅ |
-| **7** | Azure AD SSO | ⏳ Deferred |
-| **7** | Teams notifications | ⏳ Deferred |
-| **7** | Org hierarchy sync | ✅ |
+| **8** | Azure AD SSO (email + Microsoft login) | ✅ |
+| **8** | Azure AD group-based role assignment | ✅ |
+| **8** | Teams notifications (5 adaptive card types) | ✅ |
+| **8** | Org hierarchy sync | ✅ |
 
 ## Tech Stack
 
@@ -176,6 +187,8 @@ npm run build
 | Styling | Tailwind CSS v4 + shadcn/ui |
 | State | Zustand + React Query |
 | Backend | Supabase (Postgres + Auth + RLS) |
+| Auth | Supabase Email + Azure AD SSO |
+| Notifications | Microsoft Teams (Power Automate webhooks) |
 | Charts | Recharts |
 | Forms | react-hook-form + zod |
 | Export | SheetJS (xlsx) |
@@ -193,11 +206,11 @@ src/
 │   ├── reports/         # Reports, AuditLog
 │   └── analytics/       # AnalyticsCharts (4 chart types)
 ├── pages/
-│   ├── auth/            # Login
+│   ├── auth/            # Login, Callback
 │   ├── employee/        # MyGoals, MyAchievements
 │   ├── manager/         # TeamDashboard, ApprovalQueue, CheckinView
-│   └── admin/           # CycleManager, OrgManager, AdminCheckins, AdminUnlock, SharedGoalPush, Reports, AuditLog, Analytics
-├── lib/                 # supabase, scoring, validation, cycle, export, supabase-helpers
+│   └── admin/           # CycleManager, OrgManager, AdminCheckins, AdminUnlock, SharedGoalPush, Reports, AuditLog, Analytics, EscalationRules, EscalationLog
+├── lib/                 # supabase, scoring, validation, cycle, export, supabase-helpers, teams, azure-sync, escalation
 ├── hooks/               # useAuth, useGoalSheet, useAchievements, use-toast
 ├── store/               # authStore (Zustand)
 ├── types/               # TypeScript types
