@@ -11,7 +11,7 @@ export function getActiveWindow(cycle: Cycle, now = new Date()): ActiveWindow {
 }
 
 export function canSubmitGoals(window: ActiveWindow): boolean {
-  return window === 'goal_setting' || window === 'Q1' || window === 'Q2' || window === 'Q3' || window === 'Q4';
+  return window === 'goal_setting';
 }
 
 export function canUpdateAchievement(window: ActiveWindow, quarter: Quarter): boolean {
