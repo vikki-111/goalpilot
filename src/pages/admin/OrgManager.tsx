@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { Users, Save, Building2 } from 'lucide-react';
+import { Users, Save, Building2, AlertTriangle } from 'lucide-react';
 import type { Profile, UserRole } from '@/types';
 
 interface EditableProfile extends Profile {
@@ -45,6 +46,21 @@ export function OrgManager() {
         manager_name: p.manager_id ? managerMap.get(p.manager_id) ?? '—' : '—',
       })) as EditableProfile[];
     },
+  });
+
+  const { data: incompleteAzureCount } = useQuery({
+    queryKey: ['incomplete-azure-profiles'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .is('department', null)
+        .is('manager_id', null)
+        .neq('role', 'admin');
+      if (error) throw error;
+      return count ?? 0;
+    },
+    refetchInterval: 30000,
   });
 
   const updateProfile = useMutation({
@@ -83,6 +99,18 @@ export function OrgManager() {
         <h1 className="text-3xl font-bold tracking-tight">Org Manager</h1>
         <p className="text-muted-foreground mt-1">Manage departments, roles, and reporting structure</p>
       </div>
+
+      {incompleteAzureCount !== undefined && incompleteAzureCount > 0 && (
+        <Alert variant="default" className="border-amber-500 bg-amber-50 dark:bg-amber-950/20">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <AlertTitle className="text-amber-800 dark:text-amber-200">
+            {incompleteAzureCount} user{incompleteAzureCount > 1 ? 's' : ''} signed in via Microsoft have incomplete profiles
+          </AlertTitle>
+          <AlertDescription className="text-amber-700 dark:text-amber-300">
+            Review and assign departments and managers below.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Card>
         <CardHeader className="pb-3">
