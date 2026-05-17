@@ -4,53 +4,9 @@ Production-grade full-stack web application for employee goal management, quarte
 
 ## Architecture
 
-See `docs/architecture.drawio` for the full architecture diagram and `docs/data-flow.drawio` for the end-to-end data flow. Open either file in draw.io to view or export as PNG/SVG.
+![Architecture Diagram](docs/architecture.drawio.png)
 
-```mermaid
-graph TB
-    subgraph Vercel["Vercel — Frontend (SPA)"]
-        direction TB
-        React["React 18 + Vite + TypeScript"]
-        Zustand["Zustand — Auth State"]
-        RQ["React Query — Server Cache"]
-        Router["React Router — Role Routes"]
-        UI["Tailwind + shadcn/ui"]
-        Forms["react-hook-form + zod"]
-        Charts["Recharts"]
-        Export["SheetJS (XLSX/CSV)"]
-        React --> Zustand
-        React --> RQ
-        React --> Router
-        React --> UI
-        React --> Forms
-        React --> Charts
-        React --> Export
-    end
-
-    subgraph Supabase["Supabase — Backend (BaaS)"]
-        direction TB
-        PG["PostgreSQL — 8 Tables"]
-        Auth["Auth — Email/Password"]
-        RLS["RLS — Row-Level Security"]
-        Triggers["Triggers — Audit + Shared Sync"]
-        Realtime["Realtime — Live Updates"]
-        PG --> RLS
-        PG --> Triggers
-        PG --> Realtime
-        Auth --> PG
-    end
-
-    Vercel <-->|"HTTPS / REST API"| Supabase
-
-    subgraph Roles["User Roles"]
-        direction LR
-        Emp["Employee"]
-        Mgr["Manager (L1)"]
-        Adm["Admin / HR"]
-    end
-
-    Roles --> Vercel
-```
+Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 
 ### Data Flow
 
