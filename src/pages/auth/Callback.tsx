@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/store/authStore';
-import { syncAzureProfile } from '@/lib/azure-sync';
+import { syncAzureProfile, extractRoleFromGroups } from '@/lib/azure-sync';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, AlertCircle } from 'lucide-react';
@@ -22,32 +22,43 @@ export function AuthCallback() {
         if (event === 'SIGNED_IN' && session) {
           try {
             console.log('[Callback] Processing SIGNED_IN for user:', session.user.id);
-            const meta = session.user.user_metadata ?? {};
-            const fullName = (meta.full_name as string) ?? (meta.name as string) ?? session.user.email ?? '';
-            const email = (meta.email as string) ?? session.user.email ?? '';
 
-            console.log('[Callback] Upserting profile for:', email);
-            const { error: upsertError } =             await supabase
+            const { data: existingProfile } = await supabase
               .from('profiles')
-              .upsert(
-                {
-                  id: session.user.id,
-                  full_name: fullName,
-                  email,
-                  role: 'employee',
-                },
-                { onConflict: 'id' }
-              );
+              .select('role')
+              .eq('id', session.user.id)
+              .single();
 
-            if (upsertError) {
-              console.error('[Callback] Upsert error:', upsertError);
-              throw upsertError;
-            }
+            const azureRole = extractRoleFromGroups(session.user.user_metadata);
 
-            console.log('[Callback] Syncing Azure profile');
-            await syncAzureProfile(supabase, session.user.id, meta);
+            const finalRole =
+              existingProfile?.role === 'admin' || existingProfile?.role === 'manager'
+                ? existingProfile.role
+                : azureRole;
 
-            console.log('[Callback] Fetching full profile');
+            console.log('Azure user_metadata:', session.user.user_metadata);
+            console.log('Groups found:', session.user.user_metadata?.groups);
+            console.log('Azure role:', azureRole);
+            console.log('Final role:', finalRole);
+
+            const fullName =
+              (session.user.user_metadata?.full_name as string) ??
+              (session.user.user_metadata?.name as string) ??
+              session.user.email ??
+              '';
+            const email = (session.user.email as string) ?? '';
+
+            await supabase.from('profiles').upsert(
+              {
+                id: session.user.id,
+                full_name: fullName,
+                email,
+                role: finalRole,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: 'id' }
+            );
+
             const { data: profileData, error: profileError } = await supabase
               .from('profiles')
               .select('*')
@@ -63,7 +74,8 @@ export function AuthCallback() {
               throw new Error('Profile not found after upsert');
             }
 
-            console.log('[Callback] Setting session');
+            await syncAzureProfile(supabase, session.user.id, session.user.user_metadata);
+
             await setSession(session.user);
 
             const role = (profileData as { role: string }).role;
