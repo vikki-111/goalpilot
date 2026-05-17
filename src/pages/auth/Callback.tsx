@@ -10,61 +10,65 @@ import { Loader2, AlertCircle } from 'lucide-react';
 export function AuthCallback() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const { setSession } = useAuthStore();
 
   useEffect(() => {
-    (async () => {
-      try {
-        const { data, error: sessionError } = await supabase.auth.getSession();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          try {
+            const meta = session.user.user_metadata ?? {};
+            const fullName = (meta.full_name as string) ?? (meta.name as string) ?? session.user.email ?? '';
+            const email = (meta.email as string) ?? session.user.email ?? '';
 
-        if (sessionError || !data.session) {
-          throw new Error('No active session found after OAuth redirect');
+            await supabase
+              .from('profiles')
+              .upsert(
+                {
+                  id: session.user.id,
+                  full_name: fullName,
+                  email,
+                  role: 'employee',
+                  updated_at: new Date().toISOString(),
+                },
+                { onConflict: 'id' }
+              );
+
+            await syncAzureProfile(supabase, session.user.id, meta);
+
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
+
+            if (!profileData) {
+              throw new Error('Profile not found after upsert');
+            }
+
+            await setSession(session.user);
+
+            const role = (profileData as { role: string }).role;
+            const redirects: Record<string, string> = {
+              employee: '/dashboard',
+              manager: '/dashboard',
+              admin: '/dashboard',
+            };
+            navigate(redirects[role] ?? '/dashboard', { replace: true });
+          } catch (err) {
+            const message = err instanceof Error ? err.message : 'Authentication failed';
+            setError(message);
+          }
+        } else if (event === 'SIGNED_OUT') {
+          navigate('/login');
         }
-
-        const { user } = data.session;
-        const meta = user.user_metadata ?? {};
-        const fullName = (meta.full_name as string) ?? (meta.name as string) ?? user.email ?? '';
-        const email = (meta.email as string) ?? user.email ?? '';
-
-        await supabase
-          .from('profiles')
-          .upsert(
-            {
-              id: user.id,
-              full_name: fullName,
-              email,
-              role: 'employee',
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: 'id' }
-          );
-
-        await syncAzureProfile(supabase, user.id, meta);
-
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-
-        if (!profileData) {
-          throw new Error('Profile not found after upsert');
-        }
-
-        await useAuthStore.getState().setSession(user);
-
-        const role = (profileData as { role: string }).role;
-        const redirects: Record<string, string> = {
-          employee: '/dashboard',
-          manager: '/dashboard',
-          admin: '/dashboard',
-        };
-        navigate(redirects[role] ?? '/dashboard', { replace: true });
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Authentication failed';
-        setError(message);
       }
-    })();
-  }, [navigate]);
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate, setSession]);
 
   if (error) {
     return (
