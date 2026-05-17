@@ -1,0 +1,375 @@
+<mxGraphModel adaptiveColors="auto">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <mxCell id="lane_emp" value="Employee" style="swimlane;horizontal=0;startSize=110;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontStyle=1;fontSize=14;html=1;" vertex="1" parent="1">
+      <mxGeometry x="0" y="0" width="300" height="2200" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_start" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;" vertex="1" parent="lane_emp">
+      <mxGeometry x="130" y="20" width="40" height="40" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_login" value="Login (email/password)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="80" width="140" height="50" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_jwt" value="JWT issued → role-based redirect" style="text;html=1;fontSize=11;fontColor=#424242;" vertex="1" parent="lane_emp">
+      <mxGeometry x="50" y="135" width="200" height="20" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_create" value="Create Goal Sheet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="165" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_add" value="Add Goals (max 8)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="211" width="140" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_thrust" value="Set Thrust Area / UoM / Target / Weightage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=11;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="251" width="140" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_weight_check" value="Weightage = 100%?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#333333;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="291" width="140" height="80" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_submit" value="Submit for Approval" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="391" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_fix" value="Fix Weightage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="437" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_awaiting" value="Awaiting Manager Review" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;dashed=1;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="483" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_window" value="Q window opens" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="529" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_log" value="Log Achievement per Goal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="575" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_status" value="Set Status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="621" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_save" value="Save" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="667" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_progress" value="View Progress Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="713" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_badge" value="See Score Badges" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="759" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_avg" value="Track Weighted Avg" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565C0;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="805" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="emp_end" value="Annual Review Complete" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="lane_emp">
+      <mxGeometry x="80" y="851" width="140" height="60" as="geometry" />
+    </mxCell>
+
+    <mxCell id="lane_mgr" value="Manager (L1)" style="swimlane;horizontal=0;startSize=110;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontColor=#4A148C;fontStyle=1;fontSize=14;html=1;" vertex="1" parent="1">
+      <mxGeometry x="300" y="0" width="300" height="2200" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_start" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="130" y="20" width="40" height="40" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_login" value="Login (email/password)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="80" width="140" height="50" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_jwt" value="JWT issued → role-based redirect" style="text;html=1;fontSize=11;fontColor=#424242;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="50" y="135" width="200" height="20" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_receive" value="Receive Submission Notification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="165" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_review" value="Review Goals" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#333333;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="211" width="140" height="80" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_approve" value="Approve + Lock Sheet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="301" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_return" value="Return with Comment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="347" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_view" value="View Team Planned vs Actual" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="393" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_checkin" value="Add Check-in Comment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="439" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_monitor" value="Monitor Weighted Avg Score" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="485" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_team" value="Team Score Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="531" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_tracker" value="Check-in Completion Tracker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="577" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_effect" value="Manager Effectiveness View" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6A1B9A;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="623" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="mgr_end" value="Team Performance Documented" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="lane_mgr">
+      <mxGeometry x="80" y="669" width="140" height="60" as="geometry" />
+    </mxCell>
+
+    <mxCell id="lane_adm" value="Admin / HR" style="swimlane;horizontal=0;startSize=110;fillColor=#FFEBEE;strokeColor=#B71C1C;fontColor=#880E4F;fontStyle=1;fontSize=14;html=1;" vertex="1" parent="1">
+      <mxGeometry x="600" y="0" width="300" height="2200" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_start" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;" vertex="1" parent="lane_adm">
+      <mxGeometry x="130" y="20" width="40" height="40" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_login" value="Login (email/password)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="80" width="140" height="50" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_jwt" value="JWT issued → role-based redirect" style="text;html=1;fontSize=11;fontColor=#424242;" vertex="1" parent="lane_adm">
+      <mxGeometry x="50" y="135" width="200" height="20" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_cycle" value="Configure Cycle Windows" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="165" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_push" value="Push Shared Goals to Employees" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="211" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_org" value="Monitor Org Completion Rate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="257" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_dept" value="View Department Summary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="303" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_report" value="Achievement Report + Export XLSX" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="349" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_audit" value="Audit Log" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="395" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_analytics" value="Analytics (QoQ, Heatmap, Distribution)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="441" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_unlock" value="Unlock Goals" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="487" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_mgr" value="Org Manager + Cycle Manager" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#B71C1C;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="533" width="140" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="adm_end" value="Cycle Closed / New Cycle Created" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="lane_adm">
+      <mxGeometry x="80" y="579" width="140" height="60" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_start_emp" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_start" target="emp_login">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_start_mgr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_start" target="mgr_login">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_start_adm" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_start" target="adm_login">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_login_create" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_login" target="emp_create">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_create_add" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_create" target="emp_add">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_add_thrust" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_add" target="emp_thrust">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_thrust_weight" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_thrust" target="emp_weight_check">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_yes" value="YES" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#212121;" edge="1" parent="1" source="emp_weight_check" target="emp_submit">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontColor=#212121;" edge="1" parent="1" source="emp_weight_check" target="emp_fix">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_fix_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_fix" target="emp_weight_check">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_submit_awaiting" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_submit" target="emp_awaiting">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_awaiting_window" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_awaiting" target="emp_window">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_window_log" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_window" target="emp_log">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_log_status" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_log" target="emp_status">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_status_save" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_status" target="emp_save">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_save_progress" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_save" target="emp_progress">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_progress_badge" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_progress" target="emp_badge">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_badge_avg" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_badge" target="emp_avg">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_emp_avg_end" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" parent="1" source="emp_avg" target="emp_end">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_mgr_login_receive" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_login" target="mgr_receive">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_mgr_receive_review" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_receive" target="mgr_review">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_appr" value="APPROVE" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=11;fontColor=#212121;" edge="1" parent="1" source="mgr_review" target="mgr_approve">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_ret" value="RETURN" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=11;fontColor=#212121;" edge="1" parent="1" source="mgr_review" target="mgr_return">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_mgr_approve_view" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_approve" target="mgr_view">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_mgr_view_checkin" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_view" target="mgr_checkin">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_mgr_checkin_monitor" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_checkin" target="mgr_monitor">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_mgr_monitor_team" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_monitor" target="mgr_team">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_mgr_team_tracker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_team" target="mgr_tracker">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_mgr_tracker_effect" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_tracker" target="mgr_effect">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_mgr_effect_end" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" parent="1" source="mgr_effect" target="mgr_end">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_login_cycle" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_login" target="adm_cycle">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_cycle_push" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_cycle" target="adm_push">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_push_org" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_push" target="adm_org">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_org_dept" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_org" target="adm_dept">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_dept_report" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_dept" target="adm_report">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_report_audit" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_report" target="adm_audit">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_audit_analytics" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_audit" target="adm_analytics">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_analytics_unlock" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_analytics" target="adm_unlock">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_unlock_mgr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_unlock" target="adm_mgr">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_adm_mgr_end" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B71C1C;strokeWidth=2;" edge="1" parent="1" source="adm_mgr" target="adm_end">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_sub_rec" value="Triggers approval queue" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#424242;strokeWidth=2;fontSize=11;fontColor=#212121;" edge="1" parent="1" source="emp_submit" target="mgr_receive">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_app_lock" value="Sheet locked" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#424242;strokeWidth=2;fontSize=11;fontColor=#212121;" edge="1" parent="1" source="mgr_approve" target="emp_window">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_ret_rev" value="Status = returned" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#424242;strokeWidth=2;fontSize=11;fontColor=#212121;" edge="1" parent="1" source="mgr_return" target="emp_fix">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_push_goal" value="Read-only goal inserted" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#424242;strokeWidth=2;fontSize=11;fontColor=#212121;" edge="1" parent="1" source="adm_push" target="emp_add">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>
