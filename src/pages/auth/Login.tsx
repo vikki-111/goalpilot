@@ -19,14 +19,48 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
+function MicrosoftIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="10" height="10" fill="#F25022" />
+      <rect x="12" y="1" width="10" height="10" fill="#7FBA00" />
+      <rect x="1" y="12" width="10" height="10" fill="#00A4EF" />
+      <rect x="12" y="12" width="10" height="10" fill="#FFB900" />
+    </svg>
+  );
+}
+
 export function Login() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [azureLoading, setAzureLoading] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
+
+  const handleMicrosoftLogin = async () => {
+    setAzureLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'azure',
+        options: {
+          scopes: 'email openid profile User.Read User.ReadBasic.All',
+          redirectTo: window.location.origin + '/auth/callback',
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Microsoft sign-in failed';
+      toast({
+        title: 'Sign-in failed',
+        description: message,
+        variant: 'destructive',
+      });
+      setAzureLoading(false);
+    }
+  };
 
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
@@ -89,7 +123,7 @@ export function Login() {
           <CardTitle>Sign in</CardTitle>
           <CardDescription>Enter your credentials to access the portal</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -121,6 +155,26 @@ export function Login() {
               {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">— or —</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-[#2F2F2F] font-semibold text-[14px]"
+            onClick={handleMicrosoftLogin}
+            disabled={azureLoading}
+          >
+            <MicrosoftIcon />
+            {azureLoading ? 'Connecting...' : 'Sign in with Microsoft'}
+          </Button>
         </CardContent>
       </Card>
     </div>
