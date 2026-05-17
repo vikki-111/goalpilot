@@ -104,9 +104,10 @@ Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 npm install
 
 # Create environment file
-cp .env.local.example .env.local
+# Create environment file from template
+cp .env.azure.example .env.azure
 
-# Edit .env.local with your Supabase credentials:
+# Edit .env.azure with your Supabase credentials:
 # VITE_SUPABASE_URL=https://your-project.supabase.co
 # VITE_SUPABASE_ANON_KEY=your-anon-key
 

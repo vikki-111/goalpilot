@@ -4,7 +4,7 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Check .env.local');
+  throw new Error('Missing Supabase environment variables. Check .env.azure');
 }
 
 console.log('[Supabase] Initializing client:', supabaseUrl.substring(0, 30) + '...');
