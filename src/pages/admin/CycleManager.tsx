@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
+import { notifyCheckinWindowOpen } from '@/lib/teams';
 import { Plus, Check, Trash2, Settings } from 'lucide-react';
 import type { Cycle } from '@/types';
 
@@ -65,10 +66,24 @@ export function CycleManager() {
         if (error) throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ['cycles'] });
       resetForm();
       toast({ title: editingCycle ? 'Cycle updated' : 'Cycle created', variant: 'success' });
+
+      const today = new Date().toISOString().split('T')[0];
+      const quarters: Array<[keyof typeof formData, string]> = [
+        ['q1_opens', 'Q1'],
+        ['q2_opens', 'Q2'],
+        ['q3_opens', 'Q3'],
+        ['q4_opens', 'Q4'],
+      ];
+      for (const [key, label] of quarters) {
+        if (vars[key] === today) {
+          notifyCheckinWindowOpen(vars.label, label);
+          break;
+        }
+      }
     },
   });
 

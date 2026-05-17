@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { checkEscalations, type RuleType } from '@/lib/escalation';
+import { checkEscalations, RULE_LABELS, type RuleType } from '@/lib/escalation';
+import { notifyEscalation } from '@/lib/teams';
 import type { Quarter } from '@/types';
 
 interface EscalationResult {
@@ -23,6 +24,11 @@ export async function runEscalationScan(
     .eq('is_active', true);
 
   if (!rules?.length) return { created: 0, updated: 0 };
+
+  async function getProfileName(userId: string): Promise<string | null> {
+    const { data } = await supabase.from('profiles').select('full_name').eq('id', userId).single();
+    return data?.full_name ?? null;
+  }
 
   async function upsertEscalation(
     ruleType: string,
@@ -68,7 +74,20 @@ export async function runEscalationScan(
           escalation_level: level,
           resolved: false,
         });
-      if (!error) created++;
+      if (!error) {
+        created++;
+        const [empName, mgrName] = await Promise.all([
+          getProfileName(employeeId),
+          managerId ? getProfileName(managerId) : Promise.resolve(null),
+        ]);
+        notifyEscalation(
+          empName ?? 'Unknown',
+          mgrName,
+          RULE_LABELS[ruleType as RuleType] ?? ruleType,
+          level,
+          quarter
+        );
+      }
     }
   }
 

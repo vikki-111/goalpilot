@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Target, Plus, Send, Lock, CheckCircle, RotateCcw } from 'lucide-react';
 import { validateGoalSheet, GOAL_RULES } from '@/lib/validation';
 import { getActiveWindow, canSubmitGoals } from '@/lib/cycle';
+import { notifyGoalSubmitted } from '@/lib/teams';
 import { useToast } from '@/hooks/use-toast';
 import { insertGoal, updateGoal, deleteGoal, fetchGoalsBySheet } from '@/lib/supabase-helpers';
 import type { Goal } from '@/types';
@@ -139,6 +140,9 @@ export function GoalSheet() {
       }));
 
       await submitSheet.mutateAsync({ sheetId: sheet.id, goals: goalsToSubmit });
+      if (profile && cycle) {
+        notifyGoalSubmitted(profile.full_name, profile.department ?? '—', cycle.label, existingGoals.length);
+      }
       toast({ title: 'Goals submitted', description: 'Awaiting manager approval.', variant: 'success' });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to submit goals';

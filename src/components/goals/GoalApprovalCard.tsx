@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { CheckCircle, RotateCcw, ArrowLeft } from 'lucide-react';
 import { validateGoalSheet } from '@/lib/validation';
+import { notifyGoalApproved, notifyGoalReturned } from '@/lib/teams';
 import { useToast } from '@/hooks/use-toast';
 import type { Goal, GoalSheet, Profile } from '@/types';
 
@@ -43,7 +44,7 @@ export function GoalApprovalCard() {
     queryFn: async () => {
       const { data: sheet, error: sheetError } = await supabase
         .from('goal_sheets')
-        .select('*')
+        .select('*, cycles(label)')
         .eq('id', sheetId!)
         .single();
       if (sheetError) throw sheetError;
@@ -66,7 +67,8 @@ export function GoalApprovalCard() {
         sheet: sheet as GoalSheet,
         goals: (goals ?? []) as GoalWithThrust[],
         employee: employee as Pick<Profile, 'full_name' | 'department' | 'email'>,
-      } as ApprovalDetail;
+        cycleLabel: ((sheet as Record<string, unknown>).cycles as { label: string } | null)?.label ?? '—',
+      } as ApprovalDetail & { cycleLabel: string };
     },
     enabled: !!sheetId,
   });
@@ -115,6 +117,9 @@ export function GoalApprovalCard() {
         status: 'approved',
         approvedBy: profile.id,
       });
+      if (detail) {
+        notifyGoalApproved(detail.employee.full_name, profile.full_name, detail.cycleLabel);
+      }
       toast({ title: 'Goals approved', variant: 'success' });
       navigate('/dashboard');
     } catch (err) {
@@ -135,6 +140,9 @@ export function GoalApprovalCard() {
         status: 'returned',
         managerComment: returnComment.trim(),
       });
+      if (detail && profile) {
+        notifyGoalReturned(detail.employee.full_name, profile.full_name, returnComment.trim(), detail.cycleLabel);
+      }
       toast({ title: 'Goals returned', description: 'Employee has been notified.', variant: 'success' });
       setReturnOpen(false);
       navigate('/dashboard');
