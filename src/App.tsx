@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppShell, ProtectedRoute } from '@/components/layout/AppShell';
 import { Login } from '@/pages/auth/Login';
+import { AuthCallback } from '@/pages/auth/Callback';
 import { Dashboard } from '@/pages/Dashboard';
 import { TeamDashboard } from '@/pages/manager/TeamDashboard';
 import { AdminDashboard } from '@/pages/admin/AdminDashboard';
@@ -45,6 +46,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
 
           <Route element={<ProtectedRoute allowedRoles={['employee', 'manager', 'admin']} />}>
             <Route element={<AppShell />}>
