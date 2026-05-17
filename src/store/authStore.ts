@@ -8,6 +8,7 @@ interface AuthState {
   profile: Profile | null;
   role: UserRole | null;
   loading: boolean;
+  authProvider: 'email' | 'azure' | null;
   setSession: (user: User) => Promise<void>;
   clearSession: () => void;
   refreshProfile: () => Promise<void>;
@@ -18,6 +19,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   profile: null,
   role: null,
   loading: true,
+  authProvider: null,
 
   setSession: async (user: User) => {
     try {
@@ -28,10 +30,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .single();
 
       const profile = data as Profile | null;
+      const provider = (user.app_metadata?.provider as string) ?? null;
+      const authProvider: 'email' | 'azure' | null = provider === 'azure' ? 'azure' : provider === 'email' ? 'email' : null;
 
       if (error || !profile) {
         console.warn('[Auth] Profile not found for user:', user.id);
-        set({ user, profile: null, role: null, loading: false });
+        set({ user, profile: null, role: null, authProvider, loading: false });
         return;
       }
 
@@ -39,16 +43,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user,
         profile,
         role: profile.role,
+        authProvider,
         loading: false,
       });
     } catch (err) {
       console.error('[Auth] setSession error:', err);
-      set({ user, profile: null, role: null, loading: false });
+      set({ user, profile: null, role: null, authProvider: null, loading: false });
     }
   },
 
   clearSession: () => {
-    set({ user: null, profile: null, role: null, loading: false });
+    set({ user: null, profile: null, role: null, authProvider: null, loading: false });
   },
 
   refreshProfile: async () => {
