@@ -15,7 +15,6 @@ export async function syncAzureProfile(
       full_name: fullName,
       email,
       department,
-      updated_at: new Date().toISOString(),
     })
     .eq('id', userId);
 
