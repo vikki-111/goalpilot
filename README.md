@@ -4,6 +4,8 @@ Production-grade full-stack web application for employee goal management, quarte
 
 ## Architecture
 
+See `docs/architecture.drawio` for the full architecture diagram and `docs/data-flow.drawio` for the end-to-end data flow. Open either file in draw.io to view or export as PNG/SVG.
+
 ```mermaid
 graph TB
     subgraph Vercel["Vercel — Frontend (SPA)"]
