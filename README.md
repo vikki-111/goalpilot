@@ -2,6 +2,8 @@
 
 Production-grade full-stack web application for employee goal management, quarterly achievement tracking, manager approvals, and analytics.
 
+**Live Demo**: https://goalpilot-two.vercel.app/
+
 ## Architecture
 
 ![Architecture Diagram](docs/architecture.drawio.png)
