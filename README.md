@@ -1,8 +1,10 @@
 # AtomQuest — Goal Setting & Tracking Portal
+> Built for AtomQuest Hackathon 2026
 
-Production-grade full-stack web application for employee goal management, quarterly achievement tracking, manager approvals, and analytics.
+A full-stack OKR-style goal tracking portal for employees, managers, and admins —
+with quarterly achievement scoring, approval workflows, escalation rules, and analytics.
 
-**Live Demo**: https://goalpilot-two.vercel.app/
+**[Live Demo](https://goalpilot-two.vercel.app/)** · admin@demo.com / Admin@123
 
 ## Architecture
 
