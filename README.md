@@ -6,6 +6,8 @@ with quarterly achievement scoring, approval workflows, escalation rules, and an
 
 **[Live Demo](https://goalpilot-two.vercel.app/)** · admin@demo.com / Admin@123
 
+> **Azure AD SSO + Teams Integration** — currently in development on `feature/azure-teams` branch
+
 ## Architecture
 
 ![Architecture Diagram](docs/architecture.drawio.png)
