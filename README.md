@@ -161,7 +161,7 @@ npm run build
 | **7** | Escalation rules + scan + log | ✅ |
 | **7** | Azure AD SSO | ⏳ Deferred |
 | **7** | Teams notifications | ⏳ Deferred |
-| **7** | Org hierarchy sync | ⏳ Deferred |
+| **7** | Org hierarchy sync | ✅ |
 
 ## Tech Stack
 
