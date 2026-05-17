@@ -5,8 +5,8 @@ export function extractRoleFromGroups(
   userMetadata: Record<string, unknown>
 ): UserRole {
   const groups: string[] =
+    ((userMetadata?.custom_claims as Record<string, unknown>)?.groups as string[]) ??
     (userMetadata?.groups as string[]) ??
-    ((userMetadata?.app_metadata as Record<string, unknown>)?.groups as string[]) ??
     [];
 
   const GROUP_IDS: Record<UserRole, string> = {

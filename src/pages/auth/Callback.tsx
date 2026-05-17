@@ -37,7 +37,7 @@ export function AuthCallback() {
                 : azureRole;
 
             console.log('Azure user_metadata:', session.user.user_metadata);
-            console.log('Groups found:', session.user.user_metadata?.groups);
+            console.log('Groups found:', (session.user.user_metadata?.custom_claims as Record<string, unknown>)?.groups);
             console.log('Azure role:', azureRole);
             console.log('Final role:', finalRole);
 
@@ -59,18 +59,34 @@ export function AuthCallback() {
               { onConflict: 'id' }
             );
 
-            const { data: profileData, error: profileError } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
-
-            if (profileError) {
-              console.error('[Callback] Profile fetch error:', profileError);
-              throw profileError;
+            let profile = null;
+            for (let i = 0; i < 3; i++) {
+              const { data } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+              if (data) { profile = data; break; }
+              await new Promise(r => setTimeout(r, 500));
             }
 
-            if (!profileData) {
+            if (!profile) {
+              await supabase.from('profiles').upsert({
+                id: session.user.id,
+                full_name: fullName,
+                email,
+                role: finalRole,
+              }, { onConflict: 'id' });
+
+              const { data } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+              profile = data;
+            }
+
+            if (!profile) {
               throw new Error('Profile not found after upsert');
             }
 
@@ -78,7 +94,7 @@ export function AuthCallback() {
 
             await setSession(session.user);
 
-            const role = (profileData as { role: string }).role;
+            const role = (profile as { role: string }).role || finalRole || 'employee';
             console.log('[Callback] Redirecting to role:', role);
             const redirects: Record<string, string> = {
               employee: '/dashboard',
