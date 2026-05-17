@@ -3,139 +3,211 @@
     <mxCell id="0" />
     <mxCell id="1" parent="0" />
 
-    <mxCell id="title" value="&lt;b style=&quot;font-size:18px&quot;&gt;AtomQuest — Goal Setting &amp;amp; Tracking Portal&lt;/b&gt;&lt;br&gt;Architecture Diagram" style="text;html=1;align=center;fontSize=14;fontColor=#333333;strokeColor=none;fillColor=none;whiteSpace=wrap;" vertex="1" parent="1">
-      <mxGeometry x="40" y="20" width="500" height="40" as="geometry" />
+    <mxCell id="zone_users" value="Users" style="swimlane;startSize=40;fillColor=#F5F5F5;strokeColor=#9E9E9E;fontColor=#333333;html=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="20" width="180" height="420" as="geometry" />
     </mxCell>
 
-    <mxCell id="emp_actor" value="Employee" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#4CAF50;strokeColor=#388E3C;fontColor=#ffffff;fontSize=11;" vertex="1" parent="1">
-      <mxGeometry x="80" y="100" width="50" height="70" as="geometry" />
+    <mxCell id="actor_emp" value="Employee" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#2196F3;strokeColor=#1565C0;fontColor=#ffffff;fontSize=12;" vertex="1" parent="zone_users">
+      <mxGeometry x="65" y="55" width="50" height="70" as="geometry" />
     </mxCell>
 
-    <mxCell id="mgr_actor" value="Manager (L1)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#2196F3;strokeColor=#1565C0;fontColor=#ffffff;fontSize=11;" vertex="1" parent="1">
-      <mxGeometry x="260" y="100" width="50" height="70" as="geometry" />
+    <mxCell id="actor_mgr" value="Manager" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#9C27B0;strokeColor=#6A1B9A;fontColor=#ffffff;fontSize=12;" vertex="1" parent="zone_users">
+      <mxGeometry x="65" y="165" width="50" height="70" as="geometry" />
     </mxCell>
 
-    <mxCell id="adm_actor" value="Admin / HR" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#FF9800;strokeColor=#E65100;fontColor=#ffffff;fontSize=11;" vertex="1" parent="1">
-      <mxGeometry x="440" y="100" width="50" height="70" as="geometry" />
+    <mxCell id="actor_adm" value="Admin / HR" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#F44336;strokeColor=#C62828;fontColor=#ffffff;fontSize=12;" vertex="1" parent="zone_users">
+      <mxGeometry x="65" y="275" width="50" height="70" as="geometry" />
     </mxCell>
 
-    <mxCell id="vercel_container" value="Vercel — Frontend (SPA)" style="swimlane;startSize=28;fillColor=#000000;strokeColor=#333333;fontColor=#ffffff;html=1;rounded=1;arcSize=5;" vertex="1" parent="1">
-      <mxGeometry x="40" y="220" width="500" height="340" as="geometry" />
+    <mxCell id="zone_frontend" value="Frontend — Vercel CDN" style="swimlane;startSize=40;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#1565C0;html=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="220" y="20" width="860" height="420" as="geometry" />
     </mxCell>
 
-    <mxCell id="react_core" value="&lt;b&gt;React 18&lt;/b&gt;&lt;br&gt;Vite + TypeScript" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#61DAFB;strokeColor=#282C34;fontColor=#282C34;fontSize=11;" vertex="1" parent="vercel_container">
-      <mxGeometry x="170" y="40" width="160" height="50" as="geometry" />
+    <mxCell id="react_main" value="&lt;b&gt;React 18 + Vite + TypeScript&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#ffffff;fontSize=13;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="20" y="50" width="820" height="40" as="geometry" />
     </mxCell>
 
-    <mxCell id="zustand" value="Zustand&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Auth State&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;fontSize=11;" vertex="1" parent="vercel_container">
-      <mxGeometry x="30" y="110" width="110" height="50" as="geometry" />
+    <mxCell id="fe_zustand" value="&lt;b&gt;Zustand&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Local State&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2196F3;fontSize=11;shadow=1;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="20" y="110" width="250" height="60" as="geometry" />
     </mxCell>
 
-    <mxCell id="react_query" value="React Query&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Server Cache&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#2196F3;fontSize=11;" vertex="1" parent="vercel_container">
-      <mxGeometry x="160" y="110" width="110" height="50" as="geometry" />
+    <mxCell id="fe_rq" value="&lt;b&gt;React Query&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Server State&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2196F3;fontSize=11;shadow=1;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="290" y="110" width="250" height="60" as="geometry" />
     </mxCell>
 
-    <mxCell id="router" value="React Router&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Role Routes&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FF9800;fontSize=11;" vertex="1" parent="vercel_container">
-      <mxGeometry x="290" y="110" width="110" height="50" as="geometry" />
+    <mxCell id="fe_router" value="&lt;b&gt;React Router v6&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Routing&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2196F3;fontSize=11;shadow=1;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="560" y="110" width="250" height="60" as="geometry" />
     </mxCell>
 
-    <mxCell id="tailwind" value="Tailwind CSS v4&lt;br&gt;&lt;font size=&quot;10&quot;&gt;+ shadcn/ui&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#9C27B0;fontSize=11;" vertex="1" parent="vercel_container">
-      <mxGeometry x="30" y="180" width="110" height="50" as="geometry" />
+    <mxCell id="fe_ui" value="&lt;b&gt;shadcn/ui + Tailwind&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;UI Components&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2196F3;fontSize=11;shadow=1;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="20" y="190" width="250" height="60" as="geometry" />
     </mxCell>
 
-    <mxCell id="forms" value="react-hook-form&lt;br&gt;&lt;font size=&quot;10&quot;&gt;+ zod validation&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFC107;fontSize=11;" vertex="1" parent="vercel_container">
-      <mxGeometry x="160" y="180" width="110" height="50" as="geometry" />
+    <mxCell id="fe_charts" value="&lt;b&gt;Recharts&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Analytics Charts&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2196F3;fontSize=11;shadow=1;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="290" y="190" width="250" height="60" as="geometry" />
     </mxCell>
 
-    <mxCell id="charts" value="Recharts&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Analytics&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F7FA;strokeColor=#00BCD4;fontSize=11;" vertex="1" parent="vercel_container">
-      <mxGeometry x="290" y="180" width="110" height="50" as="geometry" />
+    <mxCell id="fe_export" value="&lt;b&gt;SheetJS / xlsx&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Export (XLSX / CSV)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2196F3;fontSize=11;shadow=1;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="560" y="190" width="250" height="60" as="geometry" />
     </mxCell>
 
-    <mxCell id="export_box" value="SheetJS&lt;br&gt;&lt;font size=&quot;10&quot;&gt;XLSX / CSV Export&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;" vertex="1" parent="vercel_container">
-      <mxGeometry x="420" y="180" width="60" height="50" as="geometry" />
+    <mxCell id="portal_emp" value="&lt;b&gt;Employee Portal&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;My Goals, My Achievements, Dashboard&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=11;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="20" y="270" width="250" height="120" as="geometry" />
     </mxCell>
 
-    <mxCell id="https_label" value="HTTPS / REST API" style="text;html=1;align=center;fontSize=12;fontColor=#666666;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-      <mxGeometry x="240" y="570" width="100" height="20" as="geometry" />
+    <mxCell id="portal_mgr" value="&lt;b&gt;Manager Portal&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Team Dashboard, Approvals, Check-ins&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=11;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="290" y="270" width="250" height="120" as="geometry" />
     </mxCell>
 
-    <mxCell id="supabase_container" value="Supabase — Backend (BaaS)" style="swimlane;startSize=28;fillColor=#3ECF8E;strokeColor=#2DA45E;fontColor=#ffffff;html=1;rounded=1;arcSize=5;" vertex="1" parent="1">
-      <mxGeometry x="40" y="610" width="500" height="220" as="geometry" />
+    <mxCell id="portal_adm" value="&lt;b&gt;Admin Console&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Cycle Manager, Org Manager, Reports,&lt;br&gt;Audit Log, Analytics, Escalation,&lt;br&gt;Unlock Goals, Shared Goals&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=11;" vertex="1" parent="zone_frontend">
+      <mxGeometry x="560" y="270" width="250" height="120" as="geometry" />
     </mxCell>
 
-    <mxCell id="postgres" value="PostgreSQL&lt;br&gt;&lt;font size=&quot;10&quot;&gt;8 Tables + RLS&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#336791;strokeColor=#264D6E;fontColor=#ffffff;fontSize=11;size=15;" vertex="1" parent="supabase_container">
-      <mxGeometry x="30" y="50" width="120" height="80" as="geometry" />
+    <mxCell id="zone_logic" value="Core Logic (Client-side)" style="swimlane;startSize=40;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#F57F17;html=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="460" width="1060" height="140" as="geometry" />
     </mxCell>
 
-    <mxCell id="auth" value="&lt;b&gt;Auth&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Email / Password&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FF9800;fontSize=11;" vertex="1" parent="supabase_container">
-      <mxGeometry x="170" y="50" width="120" height="50" as="geometry" />
+    <mxCell id="logic_scoring" value="&lt;b&gt;scoring.ts&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Min / Max / Timeline / Zero&lt;br&gt;UoM score formulas&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#F9A825;fontSize=11;shadow=1;" vertex="1" parent="zone_logic">
+      <mxGeometry x="20" y="50" width="240" height="70" as="geometry" />
     </mxCell>
 
-    <mxCell id="rls_box" value="&lt;b&gt;RLS&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Row-Level Security&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;fontSize=11;" vertex="1" parent="supabase_container">
-      <mxGeometry x="170" y="110" width="120" height="50" as="geometry" />
+    <mxCell id="logic_validation" value="&lt;b&gt;validation.ts&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Weightage = 100%&lt;br&gt;Max 8 goals, min 10% each&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#F9A825;fontSize=11;shadow=1;" vertex="1" parent="zone_logic">
+      <mxGeometry x="280" y="50" width="240" height="70" as="geometry" />
     </mxCell>
 
-    <mxCell id="triggers" value="&lt;b&gt;Triggers&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Audit + Shared Sync&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#2196F3;fontSize=11;" vertex="1" parent="supabase_container">
-      <mxGeometry x="310" y="50" width="120" height="50" as="geometry" />
+    <mxCell id="logic_cycle" value="&lt;b&gt;cycle.ts&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Quarter window gating&lt;br&gt;Goal submission &amp;amp; achievement locks&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#F9A825;fontSize=11;shadow=1;" vertex="1" parent="zone_logic">
+      <mxGeometry x="540" y="50" width="240" height="70" as="geometry" />
     </mxCell>
 
-    <mxCell id="realtime" value="&lt;b&gt;Realtime&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Live Updates&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#9C27B0;fontSize=11;" vertex="1" parent="supabase_container">
-      <mxGeometry x="310" y="110" width="120" height="50" as="geometry" />
+    <mxCell id="logic_escalation" value="&lt;b&gt;escalation.ts&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;10&quot;&gt;Rule-based escalation engine&lt;br&gt;3-level escalation chain&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#F9A825;fontSize=11;shadow=1;" vertex="1" parent="zone_logic">
+      <mxGeometry x="800" y="50" width="240" height="70" as="geometry" />
     </mxCell>
 
-    <mxCell id="e_emp" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4CAF50;strokeWidth=2;endArrow=classic;" edge="1" source="emp_actor" target="vercel_container" parent="1">
+    <mxCell id="zone_backend" value="Backend — Supabase (Managed Cloud)" style="swimlane;startSize=40;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#2E7D32;html=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="620" width="1060" height="440" as="geometry" />
+    </mxCell>
+
+    <mxCell id="be_pg" value="PostgreSQL Database" style="swimlane;startSize=28;fillColor=#C8E6C9;strokeColor=#2E7D32;fontColor=#1B5E20;html=1;rounded=1;" vertex="1" parent="zone_backend">
+      <mxGeometry x="20" y="50" width="240" height="360" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_profiles" value="profiles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_pg">
+      <mxGeometry x="15" y="38" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_cycles" value="cycles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_pg">
+      <mxGeometry x="125" y="38" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_thrust" value="thrust_areas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_pg">
+      <mxGeometry x="15" y="72" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_gs" value="goal_sheets" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_pg">
+      <mxGeometry x="125" y="72" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_goals" value="goals" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_pg">
+      <mxGeometry x="15" y="106" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_ach" value="achievements" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_pg">
+      <mxGeometry x="125" y="106" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_ci" value="checkin_comments" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_pg">
+      <mxGeometry x="15" y="140" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_audit" value="audit_log" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=10;fontStyle=1;" vertex="1" parent="be_pg">
+      <mxGeometry x="125" y="140" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_er" value="escalation_rules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_pg">
+      <mxGeometry x="15" y="174" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="chip_el" value="escalation_log" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_pg">
+      <mxGeometry x="125" y="174" width="100" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="be_auth" value="Auth Service" style="swimlane;startSize=28;fillColor=#C8E6C9;strokeColor=#2E7D32;fontColor=#1B5E20;html=1;rounded=1;" vertex="1" parent="zone_backend">
+      <mxGeometry x="280" y="50" width="240" height="360" as="geometry" />
+    </mxCell>
+
+    <mxCell id="auth_item1" value="Email / Password authentication" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_auth">
+      <mxGeometry x="15" y="40" width="210" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="auth_item2" value="JWT token issuing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_auth">
+      <mxGeometry x="15" y="80" width="210" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="auth_item3" value="Session management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_auth">
+      <mxGeometry x="15" y="120" width="210" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="be_rls" value="Row Level Security (RLS)" style="swimlane;startSize=28;fillColor=#C8E6C9;strokeColor=#2E7D32;fontColor=#1B5E20;html=1;rounded=1;" vertex="1" parent="zone_backend">
+      <mxGeometry x="540" y="50" width="240" height="360" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rls_item1" value="Employee: own data only" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_rls">
+      <mxGeometry x="15" y="40" width="210" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rls_item2" value="Manager: own + direct reports" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_rls">
+      <mxGeometry x="15" y="80" width="210" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rls_item3" value="Admin: full access" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_rls">
+      <mxGeometry x="15" y="120" width="210" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="be_triggers" value="DB Triggers &amp;amp; Functions" style="swimlane;startSize=28;fillColor=#C8E6C9;strokeColor=#2E7D32;fontColor=#1B5E20;html=1;rounded=1;" vertex="1" parent="zone_backend">
+      <mxGeometry x="800" y="50" width="240" height="360" as="geometry" />
+    </mxCell>
+
+    <mxCell id="trig_item1" value="post-lock audit trigger (goals)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_triggers">
+      <mxGeometry x="15" y="40" width="210" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="trig_item2" value="post-lock audit trigger (goal_sheets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_triggers">
+      <mxGeometry x="15" y="80" width="210" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="trig_item3" value="log_post_lock_changes() function" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="be_triggers">
+      <mxGeometry x="15" y="120" width="210" height="30" as="geometry" />
+    </mxCell>
+
+    <mxCell id="arr_users_fe" value="HTTPS (Browser)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#555555;strokeWidth=2;endArrow=classic;fontSize=10;fontColor=#555555;" edge="1" source="zone_users" target="zone_frontend" parent="1">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <mxCell id="e_mgr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2196F3;strokeWidth=2;endArrow=classic;" edge="1" source="mgr_actor" target="vercel_container" parent="1">
+    <mxCell id="arr_fe_auth" value="Login / Session (JWT)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#555555;strokeWidth=2;endArrow=classic;fontSize=10;fontColor=#555555;" edge="1" source="zone_frontend" target="be_auth" parent="1">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <mxCell id="e_adm" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#FF9800;strokeWidth=2;endArrow=classic;" edge="1" source="adm_actor" target="vercel_container" parent="1">
+    <mxCell id="arr_auth_pg" value="Verify + fetch role" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#555555;strokeWidth=2;endArrow=classic;fontSize=10;fontColor=#555555;" edge="1" source="be_auth" target="be_pg" parent="1">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <mxCell id="e_https" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#333333;strokeWidth=2;endArrow=classic;dashed=1;" edge="1" source="vercel_container" target="supabase_container" parent="1">
+    <mxCell id="arr_fe_pg" value="REST API / PostgREST (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#555555;strokeWidth=2;endArrow=classic;fontSize=10;fontColor=#555555;" edge="1" source="zone_frontend" target="be_pg" parent="1">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <mxCell id="e_react_zustand" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="react_core" target="zustand" parent="vercel_container">
+    <mxCell id="arr_rls_pg" value="Enforced on every query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#555555;strokeWidth=2;endArrow=classic;fontSize=10;fontColor=#555555;" edge="1" source="be_rls" target="be_pg" parent="1">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <mxCell id="e_react_rq" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="react_core" target="react_query" parent="vercel_container">
+    <mxCell id="arr_pg_trig" value="On UPDATE after lock" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#555555;strokeWidth=2;endArrow=classic;fontSize=10;fontColor=#555555;" edge="1" source="be_pg" target="be_triggers" parent="1">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <mxCell id="e_react_router" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="react_core" target="router" parent="vercel_container">
+    <mxCell id="arr_trig_audit" value="Write change record" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#F9A825;strokeWidth=2;endArrow=classic;fontSize=10;fontColor=#F57F17;" edge="1" source="be_triggers" target="chip_audit" parent="1">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <mxCell id="e_zustand_tailwind" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="zustand" target="tailwind" parent="vercel_container">
-      <mxGeometry relative="1" as="geometry" />
-    </mxCell>
-
-    <mxCell id="e_rq_forms" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="react_query" target="forms" parent="vercel_container">
-      <mxGeometry relative="1" as="geometry" />
-    </mxCell>
-
-    <mxCell id="e_router_charts" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="router" target="charts" parent="vercel_container">
-      <mxGeometry relative="1" as="geometry" />
-    </mxCell>
-
-    <mxCell id="e_auth_pg" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="auth" target="postgres" parent="supabase_container">
-      <mxGeometry relative="1" as="geometry" />
-    </mxCell>
-
-    <mxCell id="e_rls_pg" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="rls_box" target="postgres" parent="supabase_container">
-      <mxGeometry relative="1" as="geometry" />
-    </mxCell>
-
-    <mxCell id="e_triggers_pg" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="triggers" target="postgres" parent="supabase_container">
-      <mxGeometry relative="1" as="geometry" />
-    </mxCell>
-
-    <mxCell id="e_realtime_pg" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#999999;strokeWidth=1;endArrow=classic;" edge="1" source="realtime" target="postgres" parent="supabase_container">
+    <mxCell id="arr_logic_fe" value="Used by all React components" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#555555;strokeWidth=2;endArrow=classic;fontSize=10;fontColor=#555555;" edge="1" source="zone_logic" target="zone_frontend" parent="1">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
