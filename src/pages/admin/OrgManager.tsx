@@ -10,7 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { Users, Save, Building2, AlertTriangle } from 'lucide-react';
+import { Users, Save, Building2, AlertTriangle, Plus, Trash2 } from 'lucide-react';
 import type { Profile, UserRole } from '@/types';
 
 interface EditableProfile extends Profile {
@@ -26,6 +26,7 @@ export function OrgManager() {
     role: 'employee',
     manager_id: null,
   });
+  const [newDept, setNewDept] = useState('');
 
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['all-profiles'],
@@ -37,7 +38,6 @@ export function OrgManager() {
       if (error) throw error;
 
       const profiles = (data ?? []) as Profile[];
-
       const managers = profiles.filter((p) => p.role === 'manager');
       const managerMap = new Map(managers.map((m) => [m.id, m.full_name]));
 
@@ -47,6 +47,8 @@ export function OrgManager() {
       })) as EditableProfile[];
     },
   });
+
+  const departments = Array.from(new Set(profiles?.map((p) => p.department).filter((d): d is string => Boolean(d)) ?? []));
 
   const { data: incompleteAzureCount } = useQuery({
     queryKey: ['incomplete-azure-profiles'],
@@ -67,7 +69,7 @@ export function OrgManager() {
     mutationFn: async ({ id, department, role, manager_id }: { id: string; department: string; role: UserRole; manager_id: string | null }) => {
       const { error } = await supabase
         .from('profiles')
-        .update({ department, role, manager_id })
+        .update({ department: department || null, role, manager_id })
         .eq('id', id);
       if (error) throw error;
     },
@@ -75,6 +77,40 @@ export function OrgManager() {
       queryClient.invalidateQueries({ queryKey: ['all-profiles'] });
       setEditingId(null);
       toast({ title: 'Profile updated', variant: 'success' });
+    },
+  });
+
+  const addDepartment = useMutation({
+    mutationFn: async (name: string) => {
+      const trimmed = name.trim();
+      if (!trimmed) throw new Error('Department name is required');
+      const existing = profiles?.find((p) => p.department?.toLowerCase() === trimmed.toLowerCase());
+      if (existing) throw new Error('Department already exists');
+      await supabase
+        .from('profiles')
+        .update({ department: trimmed })
+        .is('department', null)
+        .limit(1);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-profiles'] });
+      setNewDept('');
+      toast({ title: 'Department added', variant: 'success' });
+    },
+  });
+
+  const removeDepartment = useMutation({
+    mutationFn: async (name: string) => {
+      const usersInDept = profiles?.filter((p) => p.department === name) ?? [];
+      if (usersInDept.length > 0) throw new Error(`Cannot remove: ${usersInDept.length} user(s) assigned`);
+      await supabase
+        .from('profiles')
+        .update({ department: null })
+        .eq('department', name);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-profiles'] });
+      toast({ title: 'Department removed', variant: 'success' });
     },
   });
 
@@ -115,6 +151,54 @@ export function OrgManager() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
+            <Building2 className="h-4 w-4" />
+            Departments
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-2 items-center">
+            {departments.map((dept) => (
+              <Badge key={dept} variant="secondary" className="flex items-center gap-1 px-3 py-1.5">
+                {dept}
+                <button
+                  onClick={() => removeDepartment.mutate(dept)}
+                  className="ml-1 text-muted-foreground hover:text-destructive transition-colors"
+                  title={`Remove ${dept}`}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+            <div className="flex items-center gap-2 ml-2">
+              <Input
+                value={newDept}
+                onChange={(e) => setNewDept(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && newDept.trim()) {
+                    addDepartment.mutate(newDept);
+                  }
+                }}
+                placeholder="New department..."
+                className="h-8 w-40"
+                disabled={addDepartment.isPending}
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => addDepartment.mutate(newDept)}
+                disabled={!newDept.trim() || addDepartment.isPending}
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Add
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
             <Users className="h-4 w-4" />
             All Users ({profiles?.length ?? 0})
           </CardTitle>
@@ -140,11 +224,20 @@ export function OrgManager() {
                     <TableCell className="text-muted-foreground whitespace-nowrap">{profile.email}</TableCell>
                     <TableCell>
                       {isEditing ? (
-                        <Input
-                          value={editData.department}
-                          onChange={(e) => setEditData({ ...editData, department: e.target.value })}
-                          className="w-40 h-8"
-                        />
+                        <Select
+                          value={editData.department || 'none'}
+                          onValueChange={(v) => setEditData({ ...editData, department: v === 'none' ? '' : v })}
+                        >
+                          <SelectTrigger className="w-40 h-8">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">None</SelectItem>
+                            {departments.map((d) => (
+                              <SelectItem key={d} value={d}>{d}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       ) : (
                         <span className="flex items-center gap-1">
                           <Building2 className="h-3 w-3 text-muted-foreground" />
