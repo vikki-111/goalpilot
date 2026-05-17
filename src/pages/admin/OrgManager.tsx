@@ -176,14 +176,14 @@ export function OrgManager() {
                     <TableCell>
                       {isEditing ? (
                         <Select
-                          value={editData.manager_id ?? ''}
-                          onValueChange={(v) => setEditData({ ...editData, manager_id: v || null })}
+                          value={editData.manager_id ?? 'none'}
+                          onValueChange={(v) => setEditData({ ...editData, manager_id: v === 'none' ? null : v })}
                         >
                           <SelectTrigger className="w-40 h-8">
                             <SelectValue placeholder="No manager" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">No manager</SelectItem>
+                            <SelectItem value="none">No manager</SelectItem>
                             {profiles
                               ?.filter((p) => p.role === 'manager' && p.id !== profile.id)
                               .map((m) => (
