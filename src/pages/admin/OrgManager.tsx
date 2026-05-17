@@ -101,12 +101,12 @@ export function OrgManager() {
       </div>
 
       {incompleteAzureCount !== undefined && incompleteAzureCount > 0 && (
-        <Alert variant="default" className="border-amber-500 bg-amber-50 dark:bg-amber-950/20">
+        <Alert className="border-amber-400 bg-amber-50 text-amber-900">
           <AlertTriangle className="h-4 w-4 text-amber-600" />
-          <AlertTitle className="text-amber-800 dark:text-amber-200">
+          <AlertTitle className="font-semibold text-amber-900">
             {incompleteAzureCount} user{incompleteAzureCount > 1 ? 's' : ''} signed in via Microsoft have incomplete profiles
           </AlertTitle>
-          <AlertDescription className="text-amber-700 dark:text-amber-300">
+          <AlertDescription className="text-amber-800">
             Review and assign departments and managers below.
           </AlertDescription>
         </Alert>
