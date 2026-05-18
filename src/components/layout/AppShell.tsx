@@ -13,6 +13,8 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
   const { role, loading } = useAuth();
 
+  console.log('[AuthGuard] checking auth - user:', !!role, 'isLoading:', loading, 'path:', window.location.pathname)
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
