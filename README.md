@@ -7,7 +7,7 @@ GoalPilot is a full-lifecycle goal management portal that covers goal creation �
 
 ## What's Included
 
-- **Complete BRD adherence** — all must-have and bonus features implemented
+- **Four UoM scoring formulas** — Min Numeric, Max Numeric, Timeline, and Zero-based each computed differently; score previews update live as employees enter actuals
 - **Azure AD SSO + org hierarchy sync** — group-based role assignment, manager resolution via Microsoft Graph API
 - **Microsoft Teams notifications** — adaptive cards for goal submissions, approvals, returns, escalations, and check-in reminders
 - **Rule-based escalation engine** — configurable thresholds, 3-level escalation chain, admin-managed rules
@@ -67,7 +67,7 @@ Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 | Field | Value |
 |---|---|
 | Label | FY 2026-27 |
-| Goal Setting Opens | 2026-05-18 |
+| Goal Setting Opens | 2026-05-01 |
 | Q1 Opens | 2026-07-01 |
 | Q2 Opens | 2026-10-01 |
 | Q3 Opens | 2027-01-01 |
@@ -131,63 +131,7 @@ npm run build
 
 ## Feature Checklist
 
-### Must-Have — Phase 1 (Goal Creation & Approval)
-
-| Feature | Status |
-|---|---|
-| Auth with Supabase email/password | ✅ |
-| Role-based access (employee/manager/admin) | ✅ |
-| Role-aware sidebar navigation | ✅ |
-| Protected routes with redirects | ✅ |
-| Database schema with RLS policies | ✅ |
-| Demo seed data (users, cycle, thrust areas, goals) | ✅ |
-| Global error boundary | ✅ |
-| Toast notification system | ✅ |
-| Goal sheet creation & editing | ✅ |
-| Weightage validation (100% total, min 10%, max 8 goals) | ✅ |
-| Live weightage progress bar | ✅ |
-| Submit flow with validation gating | ✅ |
-| Manager approval queue | ✅ |
-| Inline goal editing during approval | ✅ |
-| Approve & lock / Return with comment | ✅ |
-| Admin shared goal push | ✅ |
-
-### Must-Have — Phase 2 (Achievement Tracking & Check-ins)
-
-| Feature | Status |
-|---|---|
-| Quarterly achievement tracking | ✅ |
-| Live score computation preview | ✅ |
-| Quarter window gating | ✅ |
-| Manager check-in comments | ✅ |
-| Score badge color coding | ✅ |
-| Achievement report table | ✅ |
-| Filter by department/quarter/employee | ✅ |
-| XLSX export with timestamped filename | ✅ |
-| CSV export with UTF-8 BOM | ✅ |
-| Audit log with JSON diff view | ✅ |
-| QoQ trend line chart | ✅ |
-| Completion heatmap | ✅ |
-| Goal distribution pie + bar charts | ✅ |
-| Manager effectiveness chart | ✅ |
-| Responsive layout (collapsible sidebar) | ✅ |
-| Mobile bottom sheet drawer | ✅ |
-| Skeleton loaders on data pages | ✅ |
-| Empty states for all list views | ✅ |
-| Role-specific dashboards (Employee/Manager/Admin) | ✅ |
-
-### Good-to-Have (Bonus Features)
-
-> All bonus features implemented
-
-| Feature | Status |
-|---|---|
-| Admin goal unlock capability | ✅ |
-| Escalation rules + scan + log | ✅ |
-| Azure AD SSO (email + Microsoft login) | ✅ |
-| Azure AD group-based role assignment | ✅ |
-| Teams notifications (5 adaptive card types) | ✅ |
-| Org hierarchy sync (Microsoft Graph API) | ✅ |
+All Phase 1 and Phase 2 must-have requirements are implemented — goal creation and approval workflows, weightage validation, shared goals, quarterly achievement tracking with four UoM scoring formulas, manager check-ins, XLSX/CSV export, audit trail with JSON diff, and role-specific dashboards. All four bonus features are fully implemented: Azure AD SSO with group-based role assignment, Microsoft Teams adaptive card notifications, rule-based escalation engine, and analytics dashboard (QoQ trends, completion heatmap, goal distribution, manager effectiveness).
 
 ## Tech Stack
 
@@ -204,25 +148,3 @@ npm run build
 | Export | SheetJS (xlsx) | XLSX + CSV export in-browser |
 | Hosting | Vercel + Supabase | Zero-config deploy + managed Postgres |
 
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── ui/              # shadcn/ui primitives
-│   ├── layout/          # AppShell, Sidebar, TopBar
-│   ├── goals/           # GoalForm, GoalSheet, GoalApprovalCard
-│   ├── checkins/        # AchievementRow, CheckinModal, ScoreBadge
-│   ├── reports/         # Reports, AuditLog
-│   └── analytics/       # AnalyticsCharts (4 chart types)
-├── pages/
-│   ├── auth/            # Login, Callback
-│   ├── employee/        # MyGoals, MyAchievements
-│   ├── manager/         # TeamDashboard, ApprovalQueue, CheckinView
-│   └── admin/           # CycleManager, OrgManager, AdminCheckins, AdminUnlock, SharedGoalPush, Reports, AuditLog, Analytics, EscalationRules, EscalationLog
-├── lib/                 # supabase, scoring, validation, cycle, export, supabase-helpers, teams, azure-sync, escalation, graph
-├── hooks/               # useAuth, useGoalSheet, useAchievements, use-toast
-├── store/               # authStore (Zustand)
-├── types/               # TypeScript types
-└── utils/               # cn utility
-```
