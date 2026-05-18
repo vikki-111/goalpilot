@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
 import { useAuth } from '@/hooks/useAuth';
@@ -12,8 +12,11 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
   const { role, loading } = useAuth();
+  const location = useLocation();
 
-  console.log('[AuthGuard] checking auth - user:', !!role, 'isLoading:', loading, 'path:', window.location.pathname)
+  console.log('[AuthGuard] path:', location.pathname, 'user:', !!role, 'loading:', loading)
+
+  if (location.pathname === '/auth/callback') return <Outlet />
 
   if (loading) {
     return (

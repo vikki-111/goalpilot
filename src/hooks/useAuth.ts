@@ -13,7 +13,7 @@ export function useAuth() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setSession(session.user);
-      } else {
+      } else if (!user) {
         clearSession();
       }
     });
