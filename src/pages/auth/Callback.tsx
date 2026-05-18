@@ -85,9 +85,13 @@ export function AuthCallback() {
               role === 'manager' ? '/manager/dashboard' :
               '/employee/dashboard'
             )
-            if (role === 'admin') navigate('/admin/dashboard')
-            else if (role === 'manager') navigate('/manager/dashboard')
-            else navigate('/employee/dashboard')
+            if (role === 'admin') {
+              window.location.href = '/admin/dashboard'
+            } else if (role === 'manager') {
+              window.location.href = '/manager/dashboard'
+            } else {
+              window.location.href = '/employee/dashboard'
+            }
           } catch (err) {
             console.error('Callback error:', err)
             setError(err instanceof Error ? err.message : 'Authentication failed')
