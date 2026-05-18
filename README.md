@@ -1,5 +1,4 @@
 # GoalPilot — Goal Setting & Tracking Portal
-> Built for AtomQuest Hackathon 2026
 
 GoalPilot is a full-lifecycle goal management portal that covers goal creation → manager approval → quarterly check-ins → achievement scoring → analytics reporting. It provides three distinct role portals (Employee, Manager, Admin) with role-based access enforced at the database level. Every must-have and bonus feature specified in the BRD has been implemented.
 
