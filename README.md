@@ -13,6 +13,16 @@ and Microsoft Teams notifications via Azure AD SSO.
 
 Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 
+### Architecture Zones
+
+| Zone | Technology | Purpose |
+|---|---|---|
+| **Users** | Employee, Manager, Admin | Three distinct personas with role-based access |
+| **Core Logic** | TypeScript (client-side) | Scoring, validation, cycle gating, escalation engine |
+| **Frontend** | React 18 + Vite + Vercel CDN | Three portals: Employee, Manager, Admin Console |
+| **Backend** | Supabase (Postgres + Auth + RLS) | Database, row-level security, audit triggers |
+| **Microsoft Azure** | Entra ID + Graph API + Power Automate | SSO, org hierarchy sync, Teams notifications |
+
 ### Data Flow
 
 | Action | Flow |
