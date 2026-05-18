@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/store/authStore'
 import { extractRoleFromGroups } from '@/lib/azure-sync'
+import type { Profile } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, AlertCircle } from 'lucide-react'
@@ -63,7 +64,9 @@ export function AuthCallback() {
               throw new Error('Profile not found after upsert')
             }
 
-            await setSession(session.user)
+            await setSession(session.user, profile as Profile)
+
+            await new Promise(r => setTimeout(r, 100))
 
             const role = (profile as { role: string }).role || finalRole || 'employee'
             if (role === 'admin') navigate('/admin/dashboard')

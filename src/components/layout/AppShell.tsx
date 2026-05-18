@@ -33,12 +33,16 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
 }
 
 export function AppShell() {
-  const { role } = useAuth();
+  const { role, loading } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  if (!role) {
-    return <Navigate to="/login" replace />;
+  if (loading || !role) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
   }
 
   return (

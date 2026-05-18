@@ -9,7 +9,7 @@ interface AuthState {
   role: UserRole | null;
   loading: boolean;
   authProvider: 'email' | 'azure' | null;
-  setSession: (user: User) => Promise<void>;
+  setSession: (user: User, profile?: Profile | null) => Promise<void>;
   clearSession: () => void;
   refreshProfile: () => Promise<void>;
 }
@@ -21,19 +21,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   loading: true,
   authProvider: null,
 
-  setSession: async (user: User) => {
+  setSession: async (user: User, profile?: Profile | null) => {
     try {
+      const provider = (user.app_metadata?.provider as string) ?? null;
+      const authProvider: 'email' | 'azure' | null = provider === 'azure' ? 'azure' : provider === 'email' ? 'email' : null;
+
+      if (profile) {
+        set({ user, profile, role: profile.role, authProvider, loading: false });
+        return;
+      }
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single();
 
-      const profile = data as Profile | null;
-      const provider = (user.app_metadata?.provider as string) ?? null;
-      const authProvider: 'email' | 'azure' | null = provider === 'azure' ? 'azure' : provider === 'email' ? 'email' : null;
+      const fetchedProfile = data as Profile | null;
 
-      if (error || !profile) {
+      if (error || !fetchedProfile) {
         console.warn('[Auth] Profile not found for user:', user.id);
         set({ user, profile: null, role: null, authProvider, loading: false });
         return;
@@ -41,8 +47,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       set({
         user,
-        profile,
-        role: profile.role,
+        profile: fetchedProfile,
+        role: fetchedProfile.role,
         authProvider,
         loading: false,
       });
