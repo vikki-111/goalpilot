@@ -46,7 +46,7 @@ export function Login() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'azure',
         options: {
-          scopes: 'email openid profile User.Read User.ReadBasic.All',
+          scopes: 'email openid profile User.Read User.ReadBasic.All offline_access',
           redirectTo: window.location.origin + '/auth/callback',
         },
       });

@@ -17,6 +17,8 @@ export function AuthCallback() {
       async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
           try {
+            console.log('provider token:', session?.provider_token);
+
             const { data: existingProfile } = await supabase
               .from('profiles')
               .select('role')
