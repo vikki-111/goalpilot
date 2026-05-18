@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/store/authStore'
 import { extractRoleFromGroups } from '@/lib/azure-sync'
+import { syncOrgHierarchy } from '@/lib/graph'
 import type { Profile } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -75,6 +76,12 @@ export function AuthCallback() {
 
             await setSession(session.user, profile as Profile)
             console.log('9. Auth store updated')
+
+            if (session.provider_token) {
+              await syncOrgHierarchy(supabase, session.user.id, session.provider_token)
+            } else {
+              console.log('[OrgSync] No provider token — skipping sync')
+            }
 
             await new Promise(r => setTimeout(r, 100))
 
