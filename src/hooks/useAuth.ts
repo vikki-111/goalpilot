@@ -10,19 +10,25 @@ export function useAuth() {
     if (initialized.current) return;
     initialized.current = true;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'INITIAL_SESSION') {
-        if (session?.user) {
-          await setSession(session.user);
-        } else {
-          clearSession();
-        }
-      } else if (event === 'SIGNED_OUT') {
+    console.log('[useAuth] Initializing, checking session...');
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('[useAuth] getSession result:', session?.user?.id ?? 'no session');
+      if (session?.user) {
+        setSession(session.user);
+      } else {
+        clearSession();
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[useAuth] onAuthStateChange:', event, session?.user?.id ?? 'no user');
+      if (event === 'SIGNED_OUT') {
         clearSession();
       } else if (event === 'SIGNED_IN' && session?.user) {
-        await setSession(session.user);
+        setSession(session.user);
       } else if (event === 'TOKEN_REFRESHED' && session?.user) {
-        await setSession(session.user);
+        setSession(session.user);
       }
     });
 

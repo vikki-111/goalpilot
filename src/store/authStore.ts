@@ -22,11 +22,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   authProvider: null,
 
   setSession: async (user: User, profile?: Profile | null) => {
+    console.log('[AuthStore] setSession called for:', user.id, 'profile provided:', !!profile);
     try {
       const provider = (user.app_metadata?.provider as string) ?? null;
       const authProvider: 'email' | 'azure' | null = provider === 'azure' ? 'azure' : provider === 'email' ? 'email' : null;
 
       if (profile) {
+        console.log('[AuthStore] Setting store with provided profile:', profile.role);
         set({ user, profile, role: profile.role, authProvider, loading: false });
         return;
       }
@@ -38,6 +40,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .single();
 
       const fetchedProfile = data as Profile | null;
+      console.log('[AuthStore] Fetched profile:', fetchedProfile?.role ?? 'null', 'error:', error?.message ?? 'none');
 
       if (error || !fetchedProfile) {
         console.warn('[Auth] Profile not found for user:', user.id);
@@ -52,6 +55,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         authProvider,
         loading: false,
       });
+      console.log('[AuthStore] Store updated, role:', fetchedProfile.role);
     } catch (err) {
       console.error('[Auth] setSession error:', err);
       set({ user, profile: null, role: null, authProvider: null, loading: false });
