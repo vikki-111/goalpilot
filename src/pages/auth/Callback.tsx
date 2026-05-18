@@ -13,16 +13,10 @@ export function AuthCallback() {
   const { setSession } = useAuthStore();
 
   useEffect(() => {
-    console.log('[Callback] Starting auth listener');
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('[Callback] Auth event:', event, 'Session:', session ? 'present' : 'null');
-
         if (event === 'SIGNED_IN' && session) {
           try {
-            console.log('[Callback] Processing SIGNED_IN for user:', session.user.id);
-
             const { data: existingProfile } = await supabase
               .from('profiles')
               .select('role')
@@ -35,11 +29,6 @@ export function AuthCallback() {
               existingProfile?.role === 'admin' || existingProfile?.role === 'manager'
                 ? existingProfile.role
                 : azureRole;
-
-            console.log('Azure user_metadata:', session.user.user_metadata);
-            console.log('Groups found:', (session.user.user_metadata?.custom_claims as Record<string, unknown>)?.groups);
-            console.log('Azure role:', azureRole);
-            console.log('Final role:', finalRole);
 
             const fullName =
               (session.user.user_metadata?.full_name as string) ??
@@ -95,7 +84,6 @@ export function AuthCallback() {
             await setSession(session.user);
 
             const role = (profile as { role: string }).role || finalRole || 'employee';
-            console.log('[Callback] Redirecting to role:', role);
             const redirects: Record<string, string> = {
               employee: '/dashboard',
               manager: '/dashboard',
@@ -108,21 +96,10 @@ export function AuthCallback() {
             setError(message);
           }
         } else if (event === 'SIGNED_OUT') {
-          console.log('[Callback] SIGNED_OUT, redirecting to login');
           navigate('/login');
         }
       }
     );
-
-    // Fallback: check URL hash directly if onAuthStateChange doesn't fire
-    const checkUrlHash = async () => {
-      const hash = window.location.hash;
-      console.log('[Callback] URL hash present:', !!hash);
-      if (hash && hash.includes('access_token')) {
-        console.log('[Callback] Hash contains access_token, Supabase should process it');
-      }
-    };
-    checkUrlHash();
 
     return () => {
       subscription.unsubscribe();
