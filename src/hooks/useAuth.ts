@@ -10,10 +10,7 @@ export function useAuth() {
     if (initialized.current) return;
     initialized.current = true;
 
-    console.log('[useAuth] Initializing, checking session...');
-
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('[useAuth] getSession result:', session?.user?.id ?? 'no session');
       if (session?.user) {
         setSession(session.user);
       } else {
@@ -22,7 +19,6 @@ export function useAuth() {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('[useAuth] onAuthStateChange:', event, session?.user?.id ?? 'no user');
       if (event === 'SIGNED_OUT') {
         clearSession();
       } else if (event === 'SIGNED_IN' && session?.user) {

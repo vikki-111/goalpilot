@@ -19,29 +19,18 @@ export function AuthCallback() {
       async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
           try {
-            console.log('1. SIGNED_IN event fired')
-            console.log('2. Session user id:', session.user.id)
-
-            console.log('provider token:', session.provider_token)
-            console.log('provider token type:', typeof session.provider_token)
-            console.log('Groups found:',
-              (session.user.user_metadata?.custom_claims as Record<string, unknown>)?.groups)
-
             const azureRole = extractRoleFromGroups(session.user.user_metadata)
-            console.log('3. Azure role extracted:', azureRole)
 
             const { data: existingProfile } = await supabase
               .from('profiles')
               .select('role')
               .eq('id', session.user.id)
               .single()
-            console.log('4. Existing profile:', existingProfile)
 
             const finalRole =
               existingProfile?.role === 'admin' || existingProfile?.role === 'manager'
                 ? existingProfile.role
                 : azureRole
-            console.log('5. Final role:', finalRole)
 
             const fullName =
               (session.user.user_metadata?.full_name as string) ??
@@ -56,7 +45,6 @@ export function AuthCallback() {
               email,
               role: finalRole,
             }, { onConflict: 'id' })
-            console.log('6. Profile upserted successfully')
 
             let profile = null
             for (let i = 0; i < 3; i++) {
@@ -68,29 +56,19 @@ export function AuthCallback() {
               if (p) { profile = p; break }
               await new Promise(r => setTimeout(r, 500))
             }
-            console.log('7. Profile fetched:', profile)
-            console.log('8. Profile role:', profile?.role)
 
             if (!profile) {
               throw new Error('Profile not found after upsert')
             }
 
             await setSession(session.user, profile as Profile)
-            console.log('9. Auth store updated')
 
-            console.log('[OrgSync] Checking provider_token:', !!session.provider_token)
             if (session.provider_token) {
-              console.log('[OrgSync] Starting org hierarchy sync...')
               await syncOrgHierarchy(supabase, session.user.id, session.provider_token)
-            } else {
-              console.log('[OrgSync] No provider token — skipping sync')
             }
 
             await new Promise(r => setTimeout(r, 100))
 
-            const role = (profile as { role: string }).role || finalRole || 'employee'
-            console.log('10. Navigating to role:', role)
-            console.log('11. Navigate target: /dashboard')
             window.location.href = '/dashboard'
           } catch (err) {
             console.error('Callback error:', err)

@@ -14,8 +14,6 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
   const { role, loading } = useAuth();
   const location = useLocation();
 
-  console.log('[AuthGuard] path:', location.pathname, 'user:', !!role, 'loading:', loading)
-
   if (location.pathname === '/auth/callback') return <Outlet />
 
   if (loading) {
