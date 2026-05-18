@@ -23,6 +23,7 @@ export function AuthCallback() {
             console.log('2. Session user id:', session.user.id)
 
             console.log('provider token:', session.provider_token)
+            console.log('provider token type:', typeof session.provider_token)
             console.log('Groups found:',
               (session.user.user_metadata?.custom_claims as Record<string, unknown>)?.groups)
 
@@ -77,7 +78,9 @@ export function AuthCallback() {
             await setSession(session.user, profile as Profile)
             console.log('9. Auth store updated')
 
+            console.log('[OrgSync] Checking provider_token:', !!session.provider_token)
             if (session.provider_token) {
+              console.log('[OrgSync] Starting org hierarchy sync...')
               await syncOrgHierarchy(supabase, session.user.id, session.provider_token)
             } else {
               console.log('[OrgSync] No provider token — skipping sync')
