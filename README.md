@@ -1,17 +1,35 @@
-# GoalPilot — Goal Setting & Tracking Portal
+# GoalPilot — Goal Management Portal
 
-GoalPilot is a full-lifecycle goal management portal that covers goal creation → manager approval → quarterly check-ins → achievement scoring → analytics reporting. It provides three distinct role portals (Employee, Manager, Admin) with role-based access enforced at the database level. Every must-have and bonus feature specified in the BRD has been implemented.
+A full-lifecycle goal management platform — creation, manager approval, quarterly
+check-ins, achievement scoring, and analytics reporting — with three role-based
+portals (Employee, Manager, Admin) where authorization is enforced at the database
+layer via Postgres row-level security, not just application code.
 
-**[Live Demo](https://goalpilot-two.vercel.app/)** · admin@demo.com / Admin@123
+**[Live Demo](https://goalpilot-two.vercel.app/)**
 
-## What's Included
+Demo accounts (seeded fake data only — no real organization or personal data behind
+any of them):
 
-- **Complete BRD adherence** — all must-have and bonus features implemented
-- **Azure AD SSO + org hierarchy sync** — group-based role assignment, manager resolution via Microsoft Graph API
-- **Microsoft Teams notifications** — adaptive cards for goal submissions, approvals, returns, escalations, and check-in reminders
-- **Rule-based escalation engine** — configurable thresholds, 3-level escalation chain, admin-managed rules
-- **Analytics dashboard** — QoQ trend lines, completion heatmap, goal distribution charts, manager effectiveness bars
-- **$0 infrastructure** — runs entirely on Supabase free tier + Vercel free tier
+| Email | Password | Role |
+|---|---|---|
+| admin@demo.com | Admin@123 | admin |
+| manager1@demo.com | Manager@123 | manager |
+| emp1@demo.com | Employee@123 | employee |
+
+## Highlights
+
+- **Azure AD SSO with group-based role assignment** — resolves org hierarchy and
+  manager relationships via Microsoft Graph API, not a hand-rolled mapping table
+- **Microsoft Teams integration** — adaptive cards fire on goal submission, approval,
+  return, and escalation via Power Automate webhooks (current-standard webhooks, not
+  the deprecated connector path)
+- **Rule-based escalation engine** — configurable thresholds, a 3-level escalation
+  chain, admin-managed rules, with a scan-and-log audit trail
+- **Zero custom backend** — RLS policies and Postgres triggers enforce authorization
+  and data integrity directly; no separate API layer to maintain
+- **Full analytics suite** — QoQ trend lines, completion heatmap, goal distribution,
+  manager-effectiveness charts, all in Recharts
+- **$0 infrastructure** — Supabase + Vercel free tiers, by design
 
 ## Architecture
 
@@ -19,69 +37,76 @@ GoalPilot is a full-lifecycle goal management portal that covers goal creation �
 
 Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 
-### Data Flow
+### Data flow
 
 | Action | Flow |
 |---|---|
-| Goal Create | Employee → GoalForm (zod validate) → `goals` table → audit trigger fires |
-| Goal Approve | Manager → ApprovalCard (inline edit) → `goal_sheets.status = 'approved'` → sheet locked |
+| Goal create | Employee → GoalForm (zod validate) → `goals` table → audit trigger fires |
+| Goal approve | Manager → ApprovalCard (inline edit) → `goal_sheets.status = 'approved'` → sheet locked |
 | Achievement | Employee → AchievementRow (score preview) → `achievements` table → sync trigger propagates to shared goals |
 | Check-in | Manager → CheckinModal → `checkin_comments` table |
-| Escalation | Admin → Run scan → `runEscalationScan()` → `escalation_log` upsert |
+| Escalation | Admin → run scan → `runEscalationScan()` → `escalation_log` upsert |
 | Export | Admin → Reports → `exportToXlsx` / `exportToCsv` → browser download |
-| Teams Notify | Any workflow event → Power Automate webhook → Adaptive Card in Teams channel |
+| Teams notify | Any workflow event → Power Automate webhook → adaptive card in Teams channel |
 
-## Demo Credentials
+## Key design decisions
 
-| Email | Password | Role | What to Show |
-|---|---|---|---|
-| admin@demo.com | Admin@123 | admin | Dashboard, Analytics, Reports, Audit Log, Cycle/Org Manager, Unlock Goals, Escalation Rules |
-| manager1@demo.com | Manager@123 | manager | Team Dashboard, Approval Queue, Check-ins (Engineering team) |
-| manager2@demo.com | Manager@123 | manager | Team Dashboard, Approval Queue, Check-ins (Sales team) |
-| emp1@demo.com | Employee@123 | employee | My Goals, My Achievements (Ananya — Engineering) |
-| emp2@demo.com | Employee@123 | employee | My Goals, My Achievements (Vikram — Engineering) |
-| emp3@demo.com | Employee@123 | employee | My Goals, My Achievements (Sneha — Sales) |
-| emp4@demo.com | Employee@123 | employee | My Goals, My Achievements (Arjun — Sales) |
+**RLS instead of a custom API layer.** Authorization lives in Postgres policies, and
+data-integrity rules (weightage totals, quarter-window gating, sync-on-achievement)
+live in triggers. This means zero backend code to deploy or scale — but it also means
+authorization logic is harder to unit test in isolation from the database, and
+debugging a denied query means reading a policy, not a stack trace. Worth it here
+given the project's scope and the free-tier constraint; a larger system might still
+want a thin API layer purely for testability.
 
-## Demo Walkthrough
+**Zustand for local UI state, React Query for server state — kept deliberately
+separate.** Mixing them tends to produce components that don't know whether a piece
+of state is a cache of the server or the actual source of truth. Keeping the
+boundary explicit avoids that class of bug.
 
-1. **Login as employee** → Dashboard shows goal status, quarter window open, progress scores, recent activity
-2. **My Achievements** → Achievement data pre-filled for all 4 employees (18 achievements across all UoM types)
-3. **Login as manager** → Team Dashboard shows check-in progress, team scores sorted worst→best
-4. **Approval Queue** → Review and approve/return goal sheets with inline weightage editing
-5. **Check-ins** → View team achievements by quarter, add manager comments
-6. **Login as admin** → Org stats (4 employees, 4 approved), Q1 completion rate, department summary, audit log
-7. **Analytics** → QoQ trends (Engineering + Sales lines), heatmap (all 4 employees), goal distribution pie, manager effectiveness bars
-8. **Reports** → Filter by department/quarter, export to XLSX or CSV
-9. **Audit Log** → Red strikethrough → green diff view with employee names resolved
-10. **Unlock Goals** → Admin can revert approved/locked sheets to editable state
-11. **Cycle Manager** → Create/edit cycles, set active cycle
-12. **Org Manager** → Inline edit user department, role, and manager assignment
-13. ⭐ **Bonus: Escalation Rules** → Configure thresholds, run scan, view escalation log
-14. ⭐ **Bonus: Teams Notifications** → Trigger any event (submit, approve, return, escalation, cycle save) → Adaptive Card appears in the corresponding Teams channel
-15. ⭐ **Bonus: Azure AD SSO** → Click "Sign in with Microsoft" → auto-assigned role based on Azure AD group membership
+**Azure AD SSO with Graph API role sync, not a static role table.** Role and manager
+assignment comes from live org-hierarchy data via Microsoft Graph, so the app doesn't
+drift out of sync with the actual org chart — the tradeoff is a harder local dev setup
+(needs a real Azure AD tenant to test SSO end to end, which is why email/password
+demo accounts exist alongside it).
 
-## Active Cycle
+## What it does
 
-| Field | Value |
-|---|---|
-| Label | FY 2026-27 |
-| Goal Setting Opens | 2026-05-01 |
-| Q1 Opens | 2026-07-01 |
-| Q2 Opens | 2026-10-01 |
-| Q3 Opens | 2027-01-01 |
-| Q4 Opens | 2027-03-01 |
+Full goal lifecycle (weightage-validated sheets, submission gating, inline approval
+editing, admin shared-goal push) · quarterly achievement tracking with live score
+computation and manager check-in comments · reporting (department/quarter filters,
+XLSX/CSV export, audit log with a red-strikethrough/green-diff view) · admin tooling
+(cycle management, org-hierarchy editing, goal unlocking, escalation rules) ·
+responsive layout with a mobile bottom-sheet drawer, skeleton loaders, and empty
+states throughout.
 
-## Seeded Demo Data
+## Demo walkthrough
 
-- **4 employees** across 2 departments (Engineering: Ananya, Vikram; Sales: Sneha, Arjun)
-- **2 managers** (Ravi Sharma → Engineering, Priya Patel → Sales)
-- **1 admin** (Admin User)
-- **18 approved goals** (4-5 per employee, spread across all UoM types)
-- **18 Q1 achievements** with realistic scores (50%–150%)
-- **4 manager check-in comments** (2 per manager)
-- **4 audit log entries** from goal approvals
-- **3 escalation rules** (goal not submitted, goal not approved, check-in not completed)
+1. Log in as employee — dashboard shows goal status, current quarter window,
+   progress scores
+2. Log in as manager — approval queue, inline weightage editing, team check-ins
+3. Log in as admin — org stats, analytics (QoQ trends, heatmap, distribution,
+   manager effectiveness), reports with XLSX/CSV export
+4. Audit log — red-strikethrough/green-diff view with names resolved
+5. Escalation rules — configure a threshold, run a scan, check the log
+6. Teams notifications — trigger any workflow event, watch the adaptive card land
+   in the corresponding channel
+7. "Sign in with Microsoft" — role auto-assigned from Azure AD group membership
+
+## Tech stack
+
+| Layer | Technology | Why / notes |
+|---|---|---|
+| Frontend | React 18 + Vite + TypeScript | strict mode, zero `any` enforced at compile time |
+| Styling | Tailwind CSS v4 + shadcn/ui | utility-first, accessible component primitives |
+| State | Zustand + React Query | local UI state vs. server state kept separate by design |
+| Backend | Supabase (Postgres + Auth + RLS) | RLS + triggers replace a custom API layer |
+| Auth | Supabase email + Azure AD SSO | group-based role assignment via Entra ID |
+| Notifications | Microsoft Teams (Power Automate webhooks) | current-standard webhooks |
+| Charts | Recharts | composable React chart components |
+| Forms | react-hook-form + zod | type-safe form validation |
+| Export | SheetJS (xlsx) | XLSX + CSV export in-browser |
+| Hosting | Vercel + Supabase | zero-config deploy, managed Postgres |
 
 ## Setup
 
@@ -90,131 +115,31 @@ Source: `docs/architecture.drawio` — open in draw.io to edit or export.
 - A Supabase project (free tier)
 - (Optional) Azure AD tenant for SSO + Power Automate for Teams notifications
 
-### 1. Supabase Setup
+### 1. Supabase
 
-1. Create a project at https://supabase.com
-2. Go to SQL Editor and run `supabase/schema.sql` (creates all tables, enums, RLS, triggers)
-3. Create auth users in Supabase Dashboard → Authentication → Users:
+1. Create a project at supabase.com
+2. Run `supabase/schema.sql` in the SQL Editor (tables, enums, RLS, triggers)
+3. Create auth users under Authentication → Users (see demo accounts table above for
+   the shape; use your own for a real setup)
+4. Run `supabase/seed.sql` for sample profiles, cycle data, and goals
 
-| Email | Password | Role |
-|---|---|---|
-| admin@demo.com | Admin@123 | admin |
-| manager1@demo.com | Manager@123 | manager |
-| manager2@demo.com | Manager@123 | manager |
-| emp1@demo.com | Employee@123 | employee |
-| emp2@demo.com | Employee@123 | employee |
-| emp3@demo.com | Employee@123 | employee |
-| emp4@demo.com | Employee@123 | employee |
-
-4. Run `supabase/seed.sql` to populate profiles, cycle, thrust areas, and sample goals.
-
-### 2. Frontend Setup
+### 2. Frontend
 
 ```bash
-# Install dependencies
 npm install
-
-# Create environment file
 cp .env.local.example .env.local
-
-# Edit .env.local with your Supabase credentials:
-# VITE_SUPABASE_URL=https://your-project.supabase.co
-# VITE_SUPABASE_ANON_KEY=your-anon-key
-
-# (Optional) Teams notification webhooks
-# VITE_TEAMS_WEBHOOK_GOAL_SUBMISSIONS=
-# VITE_TEAMS_WEBHOOK_APPROVALS=
-# VITE_TEAMS_WEBHOOK_ESCALATIONS=
-# VITE_TEAMS_WEBHOOK_CHECKIN_REMINDERS=
-
-# Start dev server
-npm run dev
-
-# Build for production
-npm run build
+# fill in VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+# optionally add Teams webhook URLs for notifications
+npm run dev        # local dev
+npm run build      # production build
 ```
 
 ### 3. Deploy
 
-- **Frontend**: Push to GitHub → connect to Vercel → auto-deploy
-- **Backend**: Supabase project is already live
+Push to GitHub → connect to Vercel for auto-deploy. Supabase project is already live
+as the backend — nothing else to stand up.
 
-## Feature Checklist
-
-### Must-Have — Phase 1 (Goal Creation & Approval)
-
-| Feature | Status |
-|---|---|
-| Auth with Supabase email/password | ✅ |
-| Role-based access (employee/manager/admin) | ✅ |
-| Role-aware sidebar navigation | ✅ |
-| Protected routes with redirects | ✅ |
-| Database schema with RLS policies | ✅ |
-| Demo seed data (users, cycle, thrust areas, goals) | ✅ |
-| Global error boundary | ✅ |
-| Toast notification system | ✅ |
-| Goal sheet creation & editing | ✅ |
-| Weightage validation (100% total, min 10%, max 8 goals) | ✅ |
-| Live weightage progress bar | ✅ |
-| Submit flow with validation gating | ✅ |
-| Manager approval queue | ✅ |
-| Inline goal editing during approval | ✅ |
-| Approve & lock / Return with comment | ✅ |
-| Admin shared goal push | ✅ |
-
-### Must-Have — Phase 2 (Achievement Tracking & Check-ins)
-
-| Feature | Status |
-|---|---|
-| Quarterly achievement tracking | ✅ |
-| Live score computation preview | ✅ |
-| Quarter window gating | ✅ |
-| Manager check-in comments | ✅ |
-| Score badge color coding | ✅ |
-| Achievement report table | ✅ |
-| Filter by department/quarter/employee | ✅ |
-| XLSX export with timestamped filename | ✅ |
-| CSV export with UTF-8 BOM | ✅ |
-| Audit log with JSON diff view | ✅ |
-| QoQ trend line chart | ✅ |
-| Completion heatmap | ✅ |
-| Goal distribution pie + bar charts | ✅ |
-| Manager effectiveness chart | ✅ |
-| Responsive layout (collapsible sidebar) | ✅ |
-| Mobile bottom sheet drawer | ✅ |
-| Skeleton loaders on data pages | ✅ |
-| Empty states for all list views | ✅ |
-| Role-specific dashboards (Employee/Manager/Admin) | ✅ |
-
-### Good-to-Have (Bonus Features)
-
-> All bonus features implemented
-
-| Feature | Status |
-|---|---|
-| Admin goal unlock capability | ✅ |
-| Escalation rules + scan + log | ✅ |
-| Azure AD SSO (email + Microsoft login) | ✅ |
-| Azure AD group-based role assignment | ✅ |
-| Teams notifications (5 adaptive card types) | ✅ |
-| Org hierarchy sync (Microsoft Graph API) | ✅ |
-
-## Tech Stack
-
-| Layer | Technology | Why / Notes |
-|---|---|---|
-| Frontend | React 18 + Vite + TypeScript | strict mode, zero `any` types enforced at compile time |
-| Styling | Tailwind CSS v4 + shadcn/ui | Utility-first with accessible component primitives |
-| State | Zustand + React Query | local UI state vs server state kept separate by design |
-| Backend | Supabase (Postgres + Auth + RLS) | RLS + triggers replace a custom API layer — zero backend code |
-| Auth | Supabase Email + Azure AD SSO | Group-based role assignment via Entra ID |
-| Notifications | Microsoft Teams (Power Automate webhooks) | current standard webhooks, not deprecated connectors |
-| Charts | Recharts | Composable React chart components |
-| Forms | react-hook-form + zod | Type-safe form validation |
-| Export | SheetJS (xlsx) | XLSX + CSV export in-browser |
-| Hosting | Vercel + Supabase | Zero-config deploy + managed Postgres |
-
-## Project Structure
+## Project structure
 
 ```
 src/
@@ -224,15 +149,16 @@ src/
 │   ├── goals/           # GoalForm, GoalSheet, GoalApprovalCard
 │   ├── checkins/        # AchievementRow, CheckinModal, ScoreBadge
 │   ├── reports/         # Reports, AuditLog
-│   └── analytics/       # AnalyticsCharts (4 chart types)
+│   └── analytics/       # AnalyticsCharts
 ├── pages/
 │   ├── auth/            # Login, Callback
 │   ├── employee/        # MyGoals, MyAchievements
 │   ├── manager/         # TeamDashboard, ApprovalQueue, CheckinView
-│   └── admin/           # CycleManager, OrgManager, AdminCheckins, AdminUnlock, SharedGoalPush, Reports, AuditLog, Analytics, EscalationRules, EscalationLog
-├── lib/                 # supabase, scoring, validation, cycle, export, supabase-helpers, teams, azure-sync, escalation, graph
-├── hooks/               # useAuth, useGoalSheet, useAchievements, use-toast
-├── store/               # authStore (Zustand)
-├── types/               # TypeScript types
-└── utils/               # cn utility
+│   └── admin/           # CycleManager, OrgManager, Reports, AuditLog,
+│                         # Analytics, EscalationRules, EscalationLog, ...
+├── lib/                 # supabase, scoring, validation, cycle, export,
+│                         # teams, azure-sync, escalation, graph
+├── hooks/                # useAuth, useGoalSheet, useAchievements, use-toast
+├── store/                # authStore (Zustand)
+└── types/
 ```
