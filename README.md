@@ -5,6 +5,8 @@ check-ins, achievement scoring, and analytics reporting — with three role-base
 portals (Employee, Manager, Admin) where authorization is enforced at the database
 layer via Postgres row-level security, not just application code.
 
+> This README doubles as the project spec — feature checklists below map to the original BRD.
+
 **[Live Demo](https://goalpilot-two.vercel.app/)**
 
 Demo accounts (seeded fake data only — no real organization or personal data behind

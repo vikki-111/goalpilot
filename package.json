@@ -1,5 +1,6 @@
 {
   "name": "atomberg-portal",
+  "description": "GoalPilot — Goal Setting & Tracking Portal",
   "private": true,
   "version": "0.0.0",
   "type": "module",

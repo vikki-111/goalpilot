@@ -1,3 +1,4 @@
+// Application bootstrap — mounts the App with global error boundary
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';

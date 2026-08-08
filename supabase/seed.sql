@@ -7,6 +7,7 @@
 -- or the Supabase JS client. This script assumes the profiles
 -- already exist (auto-created by the handle_new_user trigger).
 
+-- Step 0: Ensure schema.sql has been run before this seed script
 -- Step 1: Create auth users first via Supabase Dashboard → Auth → Add User
 -- Then run this script to set up their profiles and demo data.
 
